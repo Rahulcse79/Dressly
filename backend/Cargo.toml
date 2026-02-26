@@ -1,0 +1,113 @@
+[package]
+name = "dressly-backend"
+version = "1.0.0"
+edition = "2021"
+authors = ["Dressly Team"]
+description = "Ultra-advanced AI-powered fashion advisory backend"
+license = "MIT"
+rust-version = "1.75"
+
+[dependencies]
+# Web Framework
+actix-web = "4"
+actix-rt = "2.9"
+actix-cors = "0.7"
+actix-ws = "0.3"
+actix-multipart = "0.7"
+
+# Async Runtime
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+simd-json = "0.13"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono", "json", "migrate"] }
+
+# Redis
+deadpool-redis = "0.15"
+redis = { version = "0.25", features = ["tokio-comp", "streams"] }
+
+# Authentication
+jsonwebtoken = "9"
+argon2 = "0.5"
+
+# UUID
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Date/Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+
+# Configuration
+config = "0.14"
+dotenvy = "0.15"
+
+# Logging & Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-actix-web = "0.7"
+
+# Error Handling
+thiserror = "1"
+anyhow = "1"
+
+# Rate Limiting
+actix-governor = "0.5"
+governor = "0.6"
+
+# HTTP Client (for Gemini API, Razorpay, FCM)
+reqwest = { version = "0.12", features = ["json", "multipart", "stream"] }
+
+# Image Processing
+image = "0.25"
+base64 = "0.22"
+
+# Concurrent Data Structures
+dashmap = "5"
+
+# HMAC for webhook verification
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+
+# Random
+rand = "0.8"
+
+# Metrics
+actix-web-prometheus = "0.1"
+
+# Mime types
+mime = "0.3"
+
+# Bytes
+bytes = "1"
+
+[dev-dependencies]
+actix-test = "0.1"
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1"
+mockall = "0.12"
+fake = { version = "2", features = ["derive"] }
+tokio-test = "0.4"
+serial_test = "3"
+
+[[bench]]
+name = "api_benchmarks"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.dev]
+opt-level = 0
+debug = true
