@@ -1,0 +1,9 @@
+pub mod auth_handler;
+pub mod user_handler;
+pub mod wardrobe_handler;
+pub mod ai_handler;
+pub mod subscription_handler;
+pub mod notification_handler;
+pub mod admin_handler;
+pub mod ws_handler;
+pub mod health_handler;
