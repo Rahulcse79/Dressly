@@ -1,6 +1,5 @@
 use actix_web::web;
 use actix_ws;
-use bytes::Bytes;
 use dashmap::DashMap;
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
@@ -12,7 +11,6 @@ use uuid::Uuid;
 use tracing::{info, warn, error, debug};
 
 use crate::config::AppConfig;
-use crate::services::auth::AuthService;
 
 /// WebSocket message types (client → server).
 #[derive(Debug, Deserialize)]

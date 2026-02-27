@@ -47,46 +47,93 @@ impl WardrobeRepository {
         let per_page = params.per_page.unwrap_or(20).min(100);
         let offset = ((page.saturating_sub(1)) * per_page) as i64;
 
-        // Dynamic query building for filters
-        let mut count_query = String::from("SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1");
-        let mut data_query = String::from("SELECT * FROM wardrobe_items WHERE user_id = $1");
-        let mut param_idx = 2;
-        let mut conditions = Vec::new();
+        // Use optional filters for category and season
+        match (&params.category, &params.season) {
+            (Some(category), Some(season)) => {
+                let total: (i64,) = sqlx::query_as(
+                    "SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1 AND category = $2 AND season = $3"
+                )
+                .bind(user_id)
+                .bind(category)
+                .bind(season)
+                .fetch_one(pool)
+                .await?;
 
-        if params.category.is_some() {
-            conditions.push(format!("category = ${}", param_idx));
-            param_idx += 1;
+                let items = sqlx::query_as::<_, WardrobeItem>(
+                    "SELECT * FROM wardrobe_items WHERE user_id = $1 AND category = $2 AND season = $3 ORDER BY created_at DESC LIMIT $4 OFFSET $5"
+                )
+                .bind(user_id)
+                .bind(category)
+                .bind(season)
+                .bind(per_page as i64)
+                .bind(offset)
+                .fetch_all(pool)
+                .await?;
+
+                Ok((items, total.0))
+            }
+            (Some(category), None) => {
+                let total: (i64,) = sqlx::query_as(
+                    "SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1 AND category = $2"
+                )
+                .bind(user_id)
+                .bind(category)
+                .fetch_one(pool)
+                .await?;
+
+                let items = sqlx::query_as::<_, WardrobeItem>(
+                    "SELECT * FROM wardrobe_items WHERE user_id = $1 AND category = $2 ORDER BY created_at DESC LIMIT $3 OFFSET $4"
+                )
+                .bind(user_id)
+                .bind(category)
+                .bind(per_page as i64)
+                .bind(offset)
+                .fetch_all(pool)
+                .await?;
+
+                Ok((items, total.0))
+            }
+            (None, Some(season)) => {
+                let total: (i64,) = sqlx::query_as(
+                    "SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1 AND season = $2"
+                )
+                .bind(user_id)
+                .bind(season)
+                .fetch_one(pool)
+                .await?;
+
+                let items = sqlx::query_as::<_, WardrobeItem>(
+                    "SELECT * FROM wardrobe_items WHERE user_id = $1 AND season = $2 ORDER BY created_at DESC LIMIT $3 OFFSET $4"
+                )
+                .bind(user_id)
+                .bind(season)
+                .bind(per_page as i64)
+                .bind(offset)
+                .fetch_all(pool)
+                .await?;
+
+                Ok((items, total.0))
+            }
+            (None, None) => {
+                let total: (i64,) = sqlx::query_as(
+                    "SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1"
+                )
+                .bind(user_id)
+                .fetch_one(pool)
+                .await?;
+
+                let items = sqlx::query_as::<_, WardrobeItem>(
+                    "SELECT * FROM wardrobe_items WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"
+                )
+                .bind(user_id)
+                .bind(per_page as i64)
+                .bind(offset)
+                .fetch_all(pool)
+                .await?;
+
+                Ok((items, total.0))
+            }
         }
-        if params.season.is_some() {
-            conditions.push(format!("season = ${}", param_idx));
-            // param_idx += 1; // not needed further
-        }
-
-        for cond in &conditions {
-            count_query.push_str(&format!(" AND {}", cond));
-            data_query.push_str(&format!(" AND {}", cond));
-        }
-
-        data_query.push_str(" ORDER BY created_at DESC LIMIT $99 OFFSET $98");
-
-        // For simplicity, use a simpler approach with optional filters
-        let total: (i64,) = sqlx::query_as(
-            "SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1"
-        )
-        .bind(user_id)
-        .fetch_one(pool)
-        .await?;
-
-        let items = sqlx::query_as::<_, WardrobeItem>(
-            "SELECT * FROM wardrobe_items WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"
-        )
-        .bind(user_id)
-        .bind(per_page as i64)
-        .bind(offset)
-        .fetch_all(pool)
-        .await?;
-
-        Ok((items, total.0))
     }
 
     /// Get a single wardrobe item by ID (owned by user).

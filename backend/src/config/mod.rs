@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 /// Application configuration loaded from environment variables and config files.
 /// Uses a hierarchical configuration system: defaults → config file → env vars.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct AppConfig {
     pub server: ServerConfig,
     pub database: DatabaseConfig,
@@ -18,54 +18,55 @@ pub struct AppConfig {
     pub websocket: WebSocketConfig,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct ServerConfig {
     pub host: String,
     pub port: u16,
     pub workers: usize,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct DatabaseConfig {
     pub url: String,
     pub max_connections: u32,
     pub min_connections: u32,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct RedisConfig {
     pub url: String,
     pub max_connections: usize,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct JwtConfig {
-    pub secret: String,
+    pub access_secret: String,
+    pub refresh_secret: String,
     pub access_token_expiry: i64,
     pub refresh_token_expiry: i64,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct GeminiConfig {
     pub api_key: String,
     pub model: String,
     pub api_url: String,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct RazorpayConfig {
     pub key_id: String,
     pub key_secret: String,
     pub webhook_secret: String,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct FcmConfig {
     pub server_key: String,
     pub project_id: String,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct StorageConfig {
     pub endpoint: String,
     pub access_key: String,
@@ -74,7 +75,7 @@ pub struct StorageConfig {
     pub public_url: String,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct AppSettings {
     pub free_daily_ai_quota: i32,
     pub pro_price_inr: i64,
@@ -82,13 +83,13 @@ pub struct AppSettings {
     pub max_images_per_generation: usize,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct RateLimitConfig {
     pub per_minute: u32,
     pub burst: u32,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct WebSocketConfig {
     pub heartbeat_interval: u64,
     pub client_timeout: u64,
@@ -134,13 +135,19 @@ impl AppConfig {
                     .unwrap_or(50),
             },
             jwt: JwtConfig {
-                secret: std::env::var("JWT_SECRET")
-                    .expect("JWT_SECRET must be set"),
-                access_token_expiry: std::env::var("JWT_ACCESS_TOKEN_EXPIRY")
+                access_secret: std::env::var("JWT_ACCESS_SECRET")
+                    .or_else(|_| std::env::var("JWT_SECRET"))
+                    .expect("JWT_ACCESS_SECRET or JWT_SECRET must be set"),
+                refresh_secret: std::env::var("JWT_REFRESH_SECRET")
+                    .or_else(|_| std::env::var("JWT_SECRET"))
+                    .expect("JWT_REFRESH_SECRET or JWT_SECRET must be set"),
+                access_token_expiry: std::env::var("JWT_ACCESS_EXPIRY_SECS")
+                    .or_else(|_| std::env::var("JWT_ACCESS_TOKEN_EXPIRY"))
                     .unwrap_or_else(|_| "900".into())
                     .parse()
                     .unwrap_or(900),
-                refresh_token_expiry: std::env::var("JWT_REFRESH_TOKEN_EXPIRY")
+                refresh_token_expiry: std::env::var("JWT_REFRESH_EXPIRY_SECS")
+                    .or_else(|_| std::env::var("JWT_REFRESH_TOKEN_EXPIRY"))
                     .unwrap_or_else(|_| "604800".into())
                     .parse()
                     .unwrap_or(604800),

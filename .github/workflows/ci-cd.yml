@@ -1,0 +1,197 @@
+# ══════════════════════════════════════════════════════════════
+# Dressly — GitHub Actions CI/CD Pipeline
+# ══════════════════════════════════════════════════════════════
+
+name: Dressly CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/backend
+
+jobs:
+  # ── Backend: Lint + Test ──────────────────────────────────
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: dressly_test
+          POSTGRES_USER: dressly_test
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dressly_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./backend
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://dressly_test:test_password@localhost:5432/dressly_test
+          REDIS_URL: redis://localhost:6379
+          JWT_ACCESS_SECRET: test-access-secret-minimum-32-characters!!
+          JWT_REFRESH_SECRET: test-refresh-secret-minimum-32-characters!
+          GEMINI_API_KEY: test-key
+          RAZORPAY_KEY_ID: test-key
+          RAZORPAY_KEY_SECRET: test-secret
+          RAZORPAY_WEBHOOK_SECRET: test-webhook
+          FCM_SERVER_KEY: test-fcm
+        run: cargo test --all-features -- --test-threads=4
+
+      - name: Run benchmarks (dry run)
+        run: cargo bench --no-run
+
+  # ── Mobile: Lint + Type Check ─────────────────────────────
+  mobile-test:
+    name: Mobile Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Run ESLint
+        run: npx eslint . --ext .ts,.tsx --max-warnings 0
+
+      - name: Run tests
+        run: npm test -- --coverage --watchAll=false
+
+  # ── Backend: Build & Push Docker Image ────────────────────
+  backend-build:
+    name: Build Backend Image
+    needs: [backend-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+  # ── Deploy to Kubernetes ──────────────────────────────────
+  deploy:
+    name: Deploy to Production
+    needs: [backend-build, mobile-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+
+      - name: Update image tag
+        run: |
+          cd infra/k8s
+          IMAGE_TAG=${{ github.sha }}
+          sed -i "s|image: ghcr.io/dressly/backend:.*|image: ghcr.io/dressly/backend:sha-${IMAGE_TAG:0:7}|g" backend-deployment.yaml
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f infra/k8s/namespace.yaml
+          kubectl apply -f infra/k8s/config.yaml
+          kubectl apply -f infra/k8s/backend-deployment.yaml
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/dressly-backend -n dressly --timeout=300s
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n dressly -l app=dressly-backend
+          kubectl get svc -n dressly

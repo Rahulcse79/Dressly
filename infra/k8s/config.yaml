@@ -1,0 +1,83 @@
+# ══════════════════════════════════════════════════════════════
+# Dressly — ConfigMap + Secrets + Ingress
+# ══════════════════════════════════════════════════════════════
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dressly-config
+  namespace: dressly
+data:
+  SERVER_HOST: "0.0.0.0"
+  SERVER_PORT: "8080"
+  RUST_LOG: "info,dressly_backend=info"
+  DATABASE_MAX_CONNECTIONS: "30"
+  DATABASE_MIN_CONNECTIONS: "10"
+  REDIS_MAX_CONNECTIONS: "30"
+  JWT_ACCESS_EXPIRY_SECS: "900"
+  JWT_REFRESH_EXPIRY_SECS: "604800"
+  GEMINI_MODEL: "gemini-2.0-flash"
+  GEMINI_MAX_TOKENS: "2048"
+  RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+  RATE_LIMIT_BURST: "10"
+  WS_HEARTBEAT_INTERVAL: "10"
+  WS_CLIENT_TIMEOUT: "30"
+  FREE_DAILY_GENERATIONS: "5"
+  PRO_DAILY_GENERATIONS: "100"
+  PRO_PRICE_INR: "499"
+  STORAGE_REGION: "asia-south1"
+  STORAGE_BUCKET: "dressly-uploads-prod"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dressly-secrets
+  namespace: dressly
+type: Opaque
+stringData:
+  DATABASE_URL: "postgres://dressly:CHANGE_ME@postgres-primary.dressly:5432/dressly?sslmode=require"
+  REDIS_URL: "redis://redis-master.dressly:6379"
+  JWT_ACCESS_SECRET: "CHANGE_ME_production_access_secret_minimum_32_chars"
+  JWT_REFRESH_SECRET: "CHANGE_ME_production_refresh_secret_minimum_32_chars"
+  GEMINI_API_KEY: "CHANGE_ME"
+  RAZORPAY_KEY_ID: "CHANGE_ME"
+  RAZORPAY_KEY_SECRET: "CHANGE_ME"
+  RAZORPAY_WEBHOOK_SECRET: "CHANGE_ME"
+  FCM_SERVER_KEY: "CHANGE_ME"
+  STORAGE_ENDPOINT: "https://storage.googleapis.com"
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dressly-ingress
+  namespace: dressly
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+    nginx.ingress.kubernetes.io/websocket-services: "dressly-backend"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+spec:
+  tls:
+    - hosts:
+        - api.dressly.app
+      secretName: dressly-tls
+  rules:
+    - host: api.dressly.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dressly-backend
+                port:
+                  number: 80

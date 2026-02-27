@@ -69,11 +69,12 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         // CORS configuration
+        // Note: allow_any_origin() + supports_credentials() violates CORS spec.
+        // In production, use .allowed_origin("https://your-app.com")
         let cors = Cors::default()
             .allow_any_origin()
             .allow_any_method()
             .allow_any_header()
-            .supports_credentials()
             .max_age(3600);
 
         App::new()

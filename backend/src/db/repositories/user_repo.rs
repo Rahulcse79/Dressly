@@ -80,8 +80,7 @@ impl UserRepository {
 
     /// Get user with profile combined.
     pub async fn get_user_with_profile(pool: &PgPool, user_id: Uuid) -> AppResult<Option<UserWithProfile>> {
-        let result = sqlx::query_as!(
-            UserWithProfile,
+        let result = sqlx::query_as::<_, UserWithProfile>(
             r#"
             SELECT u.id, u.email, u.role AS "role: UserRole",
                    u.is_verified, u.is_active,
@@ -92,8 +91,8 @@ impl UserRepository {
             LEFT JOIN user_profiles p ON p.user_id = u.id
             WHERE u.id = $1
             "#,
-            user_id
         )
+        .bind(user_id)
         .fetch_optional(pool)
         .await?;
 
@@ -170,8 +169,7 @@ impl UserRepository {
             .fetch_one(pool)
             .await?;
 
-        let users = sqlx::query_as!(
-            UserWithProfile,
+        let users = sqlx::query_as::<_, UserWithProfile>(
             r#"
             SELECT u.id, u.email, u.role AS "role: UserRole",
                    u.is_verified, u.is_active,
@@ -183,9 +181,9 @@ impl UserRepository {
             ORDER BY u.created_at DESC
             LIMIT $1 OFFSET $2
             "#,
-            per_page as i64,
-            offset
         )
+        .bind(per_page as i64)
+        .bind(offset)
         .fetch_all(pool)
         .await?;
 

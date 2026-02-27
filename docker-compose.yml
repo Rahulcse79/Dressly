@@ -1,0 +1,172 @@
+# ══════════════════════════════════════════════════════════════
+# Dressly — Docker Compose (Development)
+# ══════════════════════════════════════════════════════════════
+
+version: "3.9"
+
+services:
+  # ── PostgreSQL ────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: dressly-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dressly
+      POSTGRES_USER: dressly_user
+      POSTGRES_PASSWORD: dressly_secret_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dressly_user -d dressly"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ─────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: dressly-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend API ───────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dressly-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Server
+      SERVER_HOST: "0.0.0.0"
+      SERVER_PORT: "8080"
+      RUST_LOG: "info,dressly_backend=debug"
+      
+      # Database
+      DATABASE_URL: "postgres://dressly_user:dressly_secret_dev@postgres:5432/dressly"
+      DATABASE_MAX_CONNECTIONS: "20"
+      DATABASE_MIN_CONNECTIONS: "5"
+      
+      # Redis
+      REDIS_URL: "redis://redis:6379"
+      REDIS_MAX_CONNECTIONS: "20"
+      
+      # JWT
+      JWT_ACCESS_SECRET: "dev-access-secret-change-in-production-min-32-chars!!"
+      JWT_REFRESH_SECRET: "dev-refresh-secret-change-in-production-min-32-chars!"
+      JWT_ACCESS_EXPIRY_SECS: "900"
+      JWT_REFRESH_EXPIRY_SECS: "604800"
+      
+      # AI (set your key)
+      GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      GEMINI_MODEL: "gemini-2.0-flash"
+      GEMINI_MAX_TOKENS: "2048"
+      
+      # Payments (set your keys)
+      RAZORPAY_KEY_ID: "${RAZORPAY_KEY_ID}"
+      RAZORPAY_KEY_SECRET: "${RAZORPAY_KEY_SECRET}"
+      RAZORPAY_WEBHOOK_SECRET: "${RAZORPAY_WEBHOOK_SECRET}"
+      
+      # FCM
+      FCM_SERVER_KEY: "${FCM_SERVER_KEY}"
+      
+      # Storage
+      STORAGE_ENDPOINT: "https://storage.googleapis.com"
+      STORAGE_BUCKET: "dressly-uploads"
+      STORAGE_REGION: "asia-south1"
+      
+      # Rate Limiting
+      RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+      RATE_LIMIT_BURST: "10"
+      
+      # WebSocket
+      WS_HEARTBEAT_INTERVAL: "10"
+      WS_CLIENT_TIMEOUT: "30"
+      
+      # App
+      FREE_DAILY_GENERATIONS: "5"
+      PRO_DAILY_GENERATIONS: "100"
+      PRO_PRICE_INR: "499"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+  # ── pgBouncer ─────────────────────────────────────────────
+  pgbouncer:
+    image: edoburu/pgbouncer:1.22.0
+    container_name: dressly-pgbouncer
+    restart: unless-stopped
+    ports:
+      - "6432:6432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://dressly_user:dressly_secret_dev@postgres:5432/dressly"
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 200
+      DEFAULT_POOL_SIZE: 25
+      MIN_POOL_SIZE: 5
+
+  # ── Prometheus ────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: dressly-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=15d'
+
+  # ── Grafana ───────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: dressly-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: dressly_grafana_dev
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  default:
+    name: dressly-network

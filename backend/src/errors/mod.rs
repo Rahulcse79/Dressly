@@ -1,7 +1,6 @@
 use thiserror::Error;
 use actix_web::{HttpResponse, ResponseError};
 use serde::Serialize;
-use std::fmt;
 
 /// Centralized error types for the Dressly application.
 /// Each variant maps to a specific HTTP status code and error response.

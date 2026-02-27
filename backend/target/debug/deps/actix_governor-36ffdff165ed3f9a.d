@@ -1,0 +1,10 @@
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/debug/deps/actix_governor-36ffdff165ed3f9a.d: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/extractor.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/key_extractor.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/service.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/debug/deps/libactix_governor-36ffdff165ed3f9a.rlib: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/extractor.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/key_extractor.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/service.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/debug/deps/libactix_governor-36ffdff165ed3f9a.rmeta: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/extractor.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/key_extractor.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/service.rs
+
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/lib.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/extractor.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/key_extractor.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/actix-governor-0.5.0/src/service.rs:

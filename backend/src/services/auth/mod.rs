@@ -85,7 +85,7 @@ impl AuthService {
         let token = encode(
             &Header::default(),
             &claims,
-            &EncodingKey::from_secret(self.config.jwt.secret.as_bytes()),
+            &EncodingKey::from_secret(self.config.jwt.access_secret.as_bytes()),
         )?;
 
         Ok(token)
@@ -109,7 +109,7 @@ impl AuthService {
         let token = encode(
             &Header::default(),
             &claims,
-            &EncodingKey::from_secret(self.config.jwt.secret.as_bytes()),
+            &EncodingKey::from_secret(self.config.jwt.refresh_secret.as_bytes()),
         )?;
 
         Ok(token)
@@ -119,18 +119,31 @@ impl AuthService {
     pub fn validate_token(&self, token: &str) -> AppResult<TokenData<Claims>> {
         let validation = Validation::default();
 
+        // Try access secret first, then refresh secret
         let token_data = decode::<Claims>(
             token,
-            &DecodingKey::from_secret(self.config.jwt.secret.as_bytes()),
+            &DecodingKey::from_secret(self.config.jwt.access_secret.as_bytes()),
             &validation,
-        )?;
+        )
+        .or_else(|_| {
+            decode::<Claims>(
+                token,
+                &DecodingKey::from_secret(self.config.jwt.refresh_secret.as_bytes()),
+                &validation,
+            )
+        })?;
 
         Ok(token_data)
     }
 
     /// Validate an access token specifically.
     pub fn validate_access_token(&self, token: &str) -> AppResult<Claims> {
-        let token_data = self.validate_token(token)?;
+        let validation = Validation::default();
+        let token_data = decode::<Claims>(
+            token,
+            &DecodingKey::from_secret(self.config.jwt.access_secret.as_bytes()),
+            &validation,
+        )?;
 
         if token_data.claims.token_type != "access" {
             return Err(AppError::Unauthorized("Not an access token".into()));
@@ -141,7 +154,12 @@ impl AuthService {
 
     /// Validate a refresh token specifically.
     pub fn validate_refresh_token(&self, token: &str) -> AppResult<Claims> {
-        let token_data = self.validate_token(token)?;
+        let validation = Validation::default();
+        let token_data = decode::<Claims>(
+            token,
+            &DecodingKey::from_secret(self.config.jwt.refresh_secret.as_bytes()),
+            &validation,
+        )?;
 
         if token_data.claims.token_type != "refresh" {
             return Err(AppError::Unauthorized("Not a refresh token".into()));

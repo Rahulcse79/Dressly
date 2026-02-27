@@ -1,4 +1,4 @@
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{web, HttpMessage, HttpRequest, HttpResponse};
 use sqlx::PgPool;
 
 use crate::api::middleware::AuthenticatedUser;
@@ -12,7 +12,7 @@ use crate::services::websocket::{WsManager, WsServerMessage};
 
 /// GET /admin/users
 pub async fn list_users(
-    req: HttpRequest,
+    _req: HttpRequest,
     pool: web::Data<PgPool>,
     query: web::Query<crate::db::models::wardrobe::PaginationParams>,
 ) -> Result<HttpResponse, AppError> {

@@ -23,7 +23,13 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                         .route("/register", web::post().to(auth_handler::register))
                         .route("/login", web::post().to(auth_handler::login))
                         .route("/refresh", web::post().to(auth_handler::refresh_token))
-                        .route("/logout", web::post().to(auth_handler::logout))
+                )
+
+                // Logout route (requires auth to identify user)
+                .service(
+                    web::scope("/auth/logout")
+                        .wrap(AuthMiddleware::any())
+                        .route("", web::post().to(auth_handler::logout))
                 )
 
                 // User routes (requires auth)

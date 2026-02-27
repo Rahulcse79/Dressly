@@ -1,0 +1,1 @@
+cargo:rustc-env=MIME_TYPES_GENERATED_PATH=/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/debug/build/mime_guess-5ec4c022cfa93e63/out/mime_types_generated.rs

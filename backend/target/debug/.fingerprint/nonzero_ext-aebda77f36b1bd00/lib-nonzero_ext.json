@@ -1,0 +1,1 @@
+{"rustc":9634816904995266103,"features":"[\"std\"]","declared_features":"[\"default\", \"std\"]","target":9237964282497980282,"profile":5347358027863023418,"path":7170803635640934148,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"debug/.fingerprint/nonzero_ext-aebda77f36b1bd00/dep-lib-nonzero_ext","checksum":false}}],"rustflags":[],"config":2069994364910194474,"compile_kind":0}

@@ -4,7 +4,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 use crate::config::AppConfig;
 use crate::errors::{AppError, AppResult};
-use tracing::{info, error};
+use tracing::info;
 
 /// Redis service for caching, sessions, rate limiting, and pub/sub.
 pub struct RedisService {
@@ -74,16 +74,31 @@ impl RedisService {
     pub async fn invalidate_all_sessions(&self, user_id: &Uuid) -> AppResult<()> {
         let mut conn = self.get_conn().await?;
         let pattern = format!("session:{}:*", user_id);
-        let keys: Vec<String> = redis::cmd("KEYS")
-            .arg(&pattern)
-            .query_async(&mut *conn)
-            .await
-            .map_err(|e| AppError::CacheError(e.to_string()))?;
 
-        if !keys.is_empty() {
-            let _: () = conn.del(keys).await
+        // Use SCAN instead of KEYS to avoid O(N) blocking on large datasets
+        let mut cursor: u64 = 0;
+        loop {
+            let (next_cursor, keys): (u64, Vec<String>) = redis::cmd("SCAN")
+                .arg(cursor)
+                .arg("MATCH")
+                .arg(&pattern)
+                .arg("COUNT")
+                .arg(100)
+                .query_async(&mut *conn)
+                .await
                 .map_err(|e| AppError::CacheError(e.to_string()))?;
+
+            if !keys.is_empty() {
+                let _: () = conn.del(&keys).await
+                    .map_err(|e| AppError::CacheError(e.to_string()))?;
+            }
+
+            cursor = next_cursor;
+            if cursor == 0 {
+                break;
+            }
         }
+
         Ok(())
     }
 

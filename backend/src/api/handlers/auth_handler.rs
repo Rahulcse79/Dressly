@@ -1,4 +1,4 @@
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{web, HttpMessage, HttpRequest, HttpResponse};
 use sqlx::PgPool;
 use validator::Validate;
 
@@ -6,7 +6,7 @@ use crate::api::middleware::AuthenticatedUser;
 use crate::api::response::ApiResponse;
 use crate::db::models::user::*;
 use crate::db::repositories::UserRepository;
-use crate::errors::{AppError, AppResult};
+use crate::errors::AppError;
 use crate::services::auth::AuthService;
 use crate::services::redis_service::RedisService;
 
@@ -62,7 +62,7 @@ pub async fn register(
 pub async fn login(
     pool: web::Data<PgPool>,
     auth_service: web::Data<AuthService>,
-    redis: web::Data<RedisService>,
+    _redis: web::Data<RedisService>,
     body: web::Json<LoginRequest>,
 ) -> Result<HttpResponse, AppError> {
     body.validate()?;

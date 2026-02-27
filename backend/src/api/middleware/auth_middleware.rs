@@ -1,16 +1,15 @@
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
-    Error, HttpMessage, HttpResponse,
+    Error, HttpMessage,
     web,
 };
 use futures::future::{ok, Ready, LocalBoxFuture};
 use std::rc::Rc;
-use std::task::{Context, Poll};
 use uuid::Uuid;
 
 use crate::db::models::user::UserRole;
 use crate::errors::AppError;
-use crate::services::auth::{AuthService, Claims};
+use crate::services::auth::AuthService;
 
 /// Authenticated user data extracted from JWT.
 #[derive(Debug, Clone)]

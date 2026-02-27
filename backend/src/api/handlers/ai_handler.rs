@@ -1,4 +1,4 @@
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{web, HttpMessage, HttpRequest, HttpResponse};
 use sqlx::PgPool;
 use validator::Validate;
 use chrono::{Utc, Duration};
@@ -7,7 +7,7 @@ use crate::api::middleware::AuthenticatedUser;
 use crate::api::response::ApiResponse;
 use crate::db::models::generation::*;
 use crate::db::models::user::UserRole;
-use crate::db::repositories::{GenerationRepository, WardrobeRepository, AdminConfigRepository, SubscriptionRepository};
+use crate::db::repositories::{GenerationRepository, WardrobeRepository, AdminConfigRepository};
 use crate::errors::AppError;
 use crate::services::ai::AiService;
 use crate::services::redis_service::RedisService;
