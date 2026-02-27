@@ -48,7 +48,7 @@ pub struct UserProfile {
 }
 
 /// Combined user + profile view for API responses.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct UserWithProfile {
     pub id: Uuid,
     pub email: String,

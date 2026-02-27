@@ -100,7 +100,13 @@ impl AppConfig {
     /// Load configuration from environment variables.
     /// Priority: ENV vars > .env file > defaults
     pub fn load() -> Result<Arc<Self>, config::ConfigError> {
-        dotenvy::dotenv().ok();
+        // Try loading .env from current dir, then from the binary's directory
+        if dotenvy::dotenv().is_err() {
+            // Fallback: try loading from the directory containing Cargo.toml
+            let manifest_dir = env!("CARGO_MANIFEST_DIR");
+            let env_path = std::path::Path::new(manifest_dir).join(".env");
+            let _ = dotenvy::from_path(&env_path);
+        }
 
         let config = Self {
             server: ServerConfig {

@@ -4,11 +4,11 @@
 
 // ── API Configuration ───────────────────────────────────────
 export const API_BASE_URL = __DEV__
-  ? 'http://localhost:8080/api/v1'
-  : 'https://api.dressly.app/api/v1';
+  ? 'http://172.20.10.3:8080/v1'
+  : 'https://api.dressly.app/v1';
 
 export const WS_BASE_URL = __DEV__
-  ? 'ws://localhost:8080/ws'
+  ? 'ws://172.20.10.3:8080/ws'
   : 'wss://api.dressly.app/ws';
 
 // ── API Endpoints ───────────────────────────────────────────
@@ -45,7 +45,7 @@ export const ENDPOINTS = {
   // Notifications
   NOTIFICATIONS: '/notifications',
   NOTIFICATION_READ: (id: string) => `/notifications/${id}/read`,
-  REGISTER_FCM: '/notifications/register-token',
+  REGISTER_FCM: '/notifications/token',
   NOTIFICATIONS_UNREAD: '/notifications/unread-count',
 
   // Admin
@@ -62,13 +62,13 @@ export const ENDPOINTS = {
 
 // ── Storage Keys ────────────────────────────────────────────
 export const STORAGE_KEYS = {
-  ACCESS_TOKEN: '@dressly/access_token',
-  REFRESH_TOKEN: '@dressly/refresh_token',
-  USER: '@dressly/user',
-  THEME_MODE: '@dressly/theme_mode',
-  ONBOARDING_DONE: '@dressly/onboarding_done',
-  FCM_TOKEN: '@dressly/fcm_token',
-  DEVICE_ID: '@dressly/device_id',
+  ACCESS_TOKEN: 'dressly.access-token',
+  REFRESH_TOKEN: 'dressly.refresh-token',
+  USER: 'dressly.user',
+  THEME_MODE: 'dressly.theme-mode',
+  ONBOARDING_DONE: 'dressly.onboarding-done',
+  FCM_TOKEN: 'dressly.fcm-token',
+  DEVICE_ID: 'dressly.device-id',
 } as const;
 
 // ── Theme Colors ────────────────────────────────────────────

@@ -18,7 +18,7 @@ pub async fn generate_outfit(
     req: HttpRequest,
     pool: web::Data<PgPool>,
     ai_service: web::Data<AiService>,
-    redis: web::Data<RedisService>,
+    _redis: web::Data<RedisService>,
     ws_manager: web::Data<WsManager>,
     body: web::Json<GenerateOutfitRequest>,
 ) -> Result<HttpResponse, AppError> {
@@ -39,7 +39,7 @@ pub async fn generate_outfit(
     }
 
     // Get wardrobe items if image IDs provided
-    let mut image_data: Vec<(String, Vec<u8>)> = Vec::new();
+    let image_data: Vec<(String, Vec<u8>)> = Vec::new();
     let mut input_urls: Vec<String> = Vec::new();
 
     if let Some(ref image_ids) = body.image_ids {

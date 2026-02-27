@@ -1,5 +1,5 @@
 use actix_cors::Cors;
-use actix_web::{web, App, HttpServer, middleware};
+use actix_web::{web, App, HttpServer};
 use std::sync::Arc;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
@@ -57,10 +57,20 @@ async fn main() -> std::io::Result<()> {
     });
     info!("✅ Background workers started");
 
+    // ── Wrap in web::Data (Arc) before the closure ──────────────────
+    let db_data = web::Data::new(db_pool);
+    let auth_data = web::Data::new(auth_service);
+    let redis_data = web::Data::new(redis_service);
+    let ai_data = web::Data::new(ai_service);
+    let payment_data = web::Data::new(payment_service);
+    let notification_data = web::Data::new(notification_service);
+    let ws_data = web::Data::new(ws_manager);
+    let config_data = web::Data::from(config);
+
     // ── Configure and start HTTP server ─────────────────────────────
-    let server_host = config.server.host.clone();
-    let server_port = config.server.port;
-    let server_workers = config.server.workers;
+    let server_host = config_data.server.host.clone();
+    let server_port = config_data.server.port;
+    let server_workers = config_data.server.workers;
 
     info!(
         "🌐 Server starting on {}:{}  (workers: {})",
@@ -83,14 +93,14 @@ async fn main() -> std::io::Result<()> {
             .wrap(tracing_actix_web::TracingLogger::default())
 
             // Shared application state
-            .app_data(web::Data::new(db_pool.clone()))
-            .app_data(web::Data::new(auth_service.clone()))
-            .app_data(web::Data::new(redis_service.clone()))
-            .app_data(web::Data::new(ai_service.clone()))
-            .app_data(web::Data::new(payment_service.clone()))
-            .app_data(web::Data::new(notification_service.clone()))
-            .app_data(web::Data::new(ws_manager.clone()))
-            .app_data(web::Data::from(config.clone()))
+            .app_data(db_data.clone())
+            .app_data(auth_data.clone())
+            .app_data(redis_data.clone())
+            .app_data(ai_data.clone())
+            .app_data(payment_data.clone())
+            .app_data(notification_data.clone())
+            .app_data(ws_data.clone())
+            .app_data(config_data.clone())
 
             // JSON payload configuration
             .app_data(web::JsonConfig::default().limit(10 * 1024 * 1024)) // 10MB

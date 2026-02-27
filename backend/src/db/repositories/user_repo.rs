@@ -21,7 +21,7 @@ impl UserRepository {
             r#"
             INSERT INTO users (email, password_hash)
             VALUES ($1, $2)
-            RETURNING id, email, password_hash, role AS "role: UserRole",
+            RETURNING id, email, password_hash, role,
                       is_verified, is_active, created_at, updated_at
             "#,
         )
@@ -49,7 +49,7 @@ impl UserRepository {
     pub async fn find_by_email(pool: &PgPool, email: &str) -> AppResult<Option<User>> {
         let user = sqlx::query_as::<_, User>(
             r#"
-            SELECT id, email, password_hash, role AS "role: UserRole",
+            SELECT id, email, password_hash, role,
                    is_verified, is_active, created_at, updated_at
             FROM users
             WHERE email = $1 AND is_active = TRUE
@@ -66,7 +66,7 @@ impl UserRepository {
     pub async fn find_by_id(pool: &PgPool, user_id: Uuid) -> AppResult<Option<User>> {
         let user = sqlx::query_as::<_, User>(
             r#"
-            SELECT id, email, password_hash, role AS "role: UserRole",
+            SELECT id, email, password_hash, role,
                    is_verified, is_active, created_at, updated_at
             FROM users WHERE id = $1
             "#,
@@ -82,7 +82,7 @@ impl UserRepository {
     pub async fn get_user_with_profile(pool: &PgPool, user_id: Uuid) -> AppResult<Option<UserWithProfile>> {
         let result = sqlx::query_as::<_, UserWithProfile>(
             r#"
-            SELECT u.id, u.email, u.role AS "role: UserRole",
+            SELECT u.id, u.email, u.role,
                    u.is_verified, u.is_active,
                    p.display_name, p.avatar_url, p.gender, p.body_type,
                    p.style_preferences, p.color_preferences,
@@ -171,7 +171,7 @@ impl UserRepository {
 
         let users = sqlx::query_as::<_, UserWithProfile>(
             r#"
-            SELECT u.id, u.email, u.role AS "role: UserRole",
+            SELECT u.id, u.email, u.role,
                    u.is_verified, u.is_active,
                    p.display_name, p.avatar_url, p.gender, p.body_type,
                    p.style_preferences, p.color_preferences,

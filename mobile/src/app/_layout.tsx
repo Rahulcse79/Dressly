@@ -23,6 +23,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -100,7 +102,7 @@ export default function RootLayout() {
               <Stack.Screen name="auth" />
               <Stack.Screen name="(tabs)" />
               <Stack.Screen
-                name="admin"
+                name="admin/index"
                 options={{ presentation: 'modal' }}
               />
             </Stack>

@@ -56,4 +56,5 @@ src/workers/mod.rs:
 src/workers/subscription_worker.rs:
 /Users/rahulsingh/Documents/GitHub/Dressly/backend/src/db/migrations/001_initial_schema.sql:
 
+# env-dep:CARGO_MANIFEST_DIR=/Users/rahulsingh/Documents/GitHub/Dressly/backend
 # env-dep:CARGO_PKG_VERSION=1.0.0
