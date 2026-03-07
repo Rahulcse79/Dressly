@@ -1,0 +1,30 @@
+workflows:
+  flutter-ios-build:
+    name: Flutter iOS Build
+    max_build_duration: 60
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+
+    environment:
+      flutter: stable
+      xcode: latest
+
+    scripts:
+      - name: Go to Flutter folder
+        script: |
+          cd mobile_flutter
+
+      - name: Get dependencies
+        script: |
+          flutter pub get
+
+      - name: Build iOS
+        script: |
+          flutter build ios --release --no-codesign
+
+    artifacts:
+      - mobile_flutter/build/ios/iphoneos/*.app
