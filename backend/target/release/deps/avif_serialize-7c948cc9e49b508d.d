@@ -1,0 +1,10 @@
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/avif_serialize-7c948cc9e49b508d.d: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/boxes.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/constants.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/writer.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libavif_serialize-7c948cc9e49b508d.rlib: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/boxes.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/constants.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/writer.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libavif_serialize-7c948cc9e49b508d.rmeta: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/boxes.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/constants.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/writer.rs
+
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/lib.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/boxes.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/constants.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.8/src/writer.rs:

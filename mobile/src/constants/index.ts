@@ -4,11 +4,11 @@
 
 // ── API Configuration ───────────────────────────────────────
 export const API_BASE_URL = __DEV__
-  ? 'http://172.20.10.3:8080/v1'
+  ? 'http://192.168.0.106:8080/v1'
   : 'https://api.dressly.app/v1';
 
 export const WS_BASE_URL = __DEV__
-  ? 'ws://172.20.10.3:8080/ws'
+  ? 'ws://192.168.0.106:8080/ws'
   : 'wss://api.dressly.app/ws';
 
 // ── API Endpoints ───────────────────────────────────────────

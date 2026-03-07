@@ -1,0 +1,10 @@
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/spinning_top-991ceffcffba9457.d: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/relax.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/rw_spinlock.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/spinlock.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libspinning_top-991ceffcffba9457.rlib: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/relax.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/rw_spinlock.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/spinlock.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libspinning_top-991ceffcffba9457.rmeta: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/relax.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/rw_spinlock.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/spinlock.rs
+
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/lib.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/relax.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/rw_spinlock.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spinning_top-0.3.0/src/spinlock.rs:

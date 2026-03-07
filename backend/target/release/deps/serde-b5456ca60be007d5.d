@@ -1,0 +1,14 @@
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/serde-b5456ca60be007d5.d: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/build/serde-017ceaa53406a259/out/private.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libserde-b5456ca60be007d5.rlib: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/build/serde-017ceaa53406a259/out/private.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libserde-b5456ca60be007d5.rmeta: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/build/serde-017ceaa53406a259/out/private.rs
+
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/build/serde-017ceaa53406a259/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/build/serde-017ceaa53406a259/out

@@ -1,0 +1,11 @@
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/serde_plain-c3a36535bbf76ad8.d: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/de.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/error.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/macros.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/ser.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libserde_plain-c3a36535bbf76ad8.rlib: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/de.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/error.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/macros.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/ser.rs
+
+/Users/rahulsingh/Documents/GitHub/Dressly/backend/target/release/deps/libserde_plain-c3a36535bbf76ad8.rmeta: /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/lib.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/de.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/error.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/macros.rs /Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/ser.rs
+
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/lib.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/de.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/error.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/macros.rs:
+/Users/rahulsingh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_plain-1.0.2/src/ser.rs:
