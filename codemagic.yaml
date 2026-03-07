@@ -12,15 +12,21 @@ workflows:
     environment:
       flutter: stable
       xcode: latest
+      cocoapods: default
 
     scripts:
       - name: Get dependencies
         script: |
           cd mobile_flutter && flutter pub get
 
-      - name: Build iOS
+      - name: Install CocoaPods
         script: |
-          cd mobile_flutter && flutter build ios --release --no-codesign
+          cd mobile_flutter/ios && pod install
+
+      - name: Build iOS (no codesign)
+        script: |
+          cd mobile_flutter && flutter build ios --release --no-codesign --config-only
+          cd mobile_flutter/ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" -sdk iphoneos -destination generic/platform=iOS build
 
     artifacts:
       - mobile_flutter/build/ios/iphoneos/*.app
