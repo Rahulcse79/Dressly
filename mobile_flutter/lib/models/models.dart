@@ -34,6 +34,7 @@ class User {
     this.stylePreferences,
     this.colorPreferences,
     required this.createdAt,
+    this.subscriptionTier,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(

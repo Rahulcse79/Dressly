@@ -39,6 +39,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         return Icons.settings;
       case NotificationType.promotion:
         return Icons.local_offer;
+      default:
+        return Icons.notifications;
     }
   }
 
@@ -55,6 +57,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         return colors.textSecondary;
       case NotificationType.promotion:
         return colors.error;
+      default:
+        return colors.info;
     }
   }
 

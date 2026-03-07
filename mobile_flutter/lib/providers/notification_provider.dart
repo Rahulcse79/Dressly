@@ -44,7 +44,8 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
 
   NotificationNotifier() : super(const NotificationState());
 
-  Future<void> fetchNotifications({int page = 1}) async {
+  Future<void> fetchNotifications({int page = 1, bool refresh = false}) async {
+    if (refresh) page = 1;
     state = state.copyWith(isLoading: true);
     try {
       final response = await _api.get(
