@@ -14,17 +14,13 @@ workflows:
       xcode: latest
 
     scripts:
-      - name: Go to Flutter folder
-        script: |
-          cd mobile_flutter
-
       - name: Get dependencies
         script: |
-          flutter pub get
+          cd mobile_flutter && flutter pub get
 
       - name: Build iOS
         script: |
-          flutter build ios --release --no-codesign
+          cd mobile_flutter && flutter build ios --release --no-codesign
 
     artifacts:
       - mobile_flutter/build/ios/iphoneos/*.app
