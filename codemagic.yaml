@@ -15,7 +15,7 @@ workflows:
       cocoapods: default
 
     scripts:
-      - name: Get dependencies
+      - name: Install dependencies
         script: |
           cd mobile_flutter
           flutter pub get
@@ -28,7 +28,7 @@ workflows:
       - name: Build IPA
         script: |
           cd mobile_flutter
-          flutter build ipa --release --no-codesign
+          flutter build ipa --release
 
     artifacts:
       - mobile_flutter/build/ios/ipa/*.ipa
