@@ -49,7 +49,7 @@ const Footer = () => {
             <a href="/#features">Features</a>
             <a href="/#pricing">Pricing</a>
             <a href="/#how-it-works">How It Works</a>
-            <a href="https://app.dressly.app" target="_blank" rel="noopener noreferrer">Web App</a>
+            <a href="http://localhost:3001" target="_blank" rel="noopener noreferrer">Web App</a>
           </div>
 
           {/* Company */}

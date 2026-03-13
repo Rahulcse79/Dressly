@@ -62,7 +62,7 @@ const Navbar = () => {
 
           <div className="navbar-actions">
             <a
-              href="https://app.dressly.app"
+              href="http://localhost:3001"
               className="btn btn-ghost"
               target="_blank"
               rel="noopener noreferrer"
@@ -70,7 +70,7 @@ const Navbar = () => {
               Sign In
             </a>
             <a
-              href="https://app.dressly.app/register"
+              href="http://localhost:3001/register"
               className="btn btn-primary"
               target="_blank"
               rel="noopener noreferrer"
@@ -98,10 +98,10 @@ const Navbar = () => {
             {link.label}
           </Link>
         ))}
-        <a href="https://app.dressly.app" className="btn btn-outline" style={{ marginTop: 8 }}>
+        <a href="http://localhost:3001" className="btn btn-outline" style={{ marginTop: 8 }}>
           Sign In
         </a>
-        <a href="https://app.dressly.app/register" className="btn btn-primary">
+        <a href="http://localhost:3001/register" className="btn btn-primary">
           Get Started Free
         </a>
       </div>

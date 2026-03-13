@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Notification Provider (Riverpod)
-// ══════════════════════════════════════════════════════════════
-
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/constants.dart';

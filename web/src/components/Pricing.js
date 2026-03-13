@@ -92,7 +92,7 @@ const Pricing = () => {
             </div>
 
             <a
-              href="https://app.dressly.app/register"
+              href="http://localhost:3001/register"
               className={plan.ctaStyle}
               target="_blank"
               rel="noopener noreferrer"

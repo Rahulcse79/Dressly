@@ -35,7 +35,7 @@ const Hero = () => {
 
           <div className="hero-cta">
             <a
-              href="https://app.dressly.app/register"
+              href="http://localhost:3001/register"
               className="btn btn-primary btn-large"
               target="_blank"
               rel="noopener noreferrer"
