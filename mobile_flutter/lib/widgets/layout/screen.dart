@@ -53,6 +53,7 @@ class DresslyScreen extends ConsumerWidget {
     final body = keyboardAvoiding
         ? SafeArea(
             child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () => FocusScope.of(context).unfocus(),
               child: content,
             ),

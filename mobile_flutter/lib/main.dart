@@ -150,37 +150,19 @@ class _SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: const Color(0xFF0A0A0A),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: colors.primary,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: const Center(
-                child: Text(
-                  'D',
-                  style: TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: Spacing.lg),
-            Text(
-              'Dressly',
+            // Logo text
+            const Text(
+              'DRESSLY',
               style: TextStyle(
-                fontSize: FontSizes.xxl,
+                fontSize: 48,
                 fontWeight: FontWeight.w900,
-                color: colors.text,
+                color: Color(0xFFE53935),
+                letterSpacing: 4,
               ),
             ),
             const SizedBox(height: Spacing.sm),
@@ -188,16 +170,17 @@ class _SplashScreen extends StatelessWidget {
               'AI-Powered Fashion',
               style: TextStyle(
                 fontSize: FontSizes.base,
-                color: colors.textSecondary,
+                color: Colors.white.withOpacity(0.5),
+                letterSpacing: 1,
               ),
             ),
             const SizedBox(height: Spacing.xxl),
-            SizedBox(
+            const SizedBox(
               width: 28,
               height: 28,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: colors.primary,
+                color: Color(0xFFE53935),
               ),
             ),
           ],

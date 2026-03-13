@@ -1,5 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 // Dressly — Input Widget (Flutter)
+// Glassmorphism dark style with focus animations
 // ══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
   @override
   void dispose() {
     if (widget.focusNode == null) {
+      _focusNode.removeListener(_onFocusChange);
       _focusNode.dispose();
     } else {
       _focusNode.removeListener(_onFocusChange);
@@ -80,50 +82,91 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
   @override
   Widget build(BuildContext context) {
     final colors = ref.watch(themeProvider).colors;
+    final isDark = ref.watch(themeProvider).isDark;
     final hasError = widget.error != null && widget.error!.isNotEmpty;
 
+    // Use glassmorphism style for dark mode, standard style for light
+    final bgColor = isDark
+        ? Colors.white.withOpacity(_isFocused ? 0.10 : 0.07)
+        : (_isFocused ? colors.primary.withOpacity(0.04) : colors.surface);
+
+    final borderColor = hasError
+        ? colors.error
+        : _isFocused
+            ? (isDark
+                ? Colors.white.withOpacity(0.20)
+                : colors.primary)
+            : (isDark
+                ? Colors.white.withOpacity(0.10)
+                : colors.border);
+
+    final iconColor = isDark
+        ? Colors.white.withOpacity(_isFocused ? 0.6 : 0.4)
+        : (_isFocused ? colors.primary : colors.textMuted);
+
+    final textColor = isDark ? Colors.white : colors.text;
+    final hintColor = isDark
+        ? Colors.white.withOpacity(0.3)
+        : colors.textMuted.withOpacity(0.7);
+    final labelColor = isDark
+        ? Colors.white
+        : (_isFocused ? colors.primary : colors.textSecondary);
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.base),
+      padding: const EdgeInsets.only(bottom: Spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.label != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.xs),
+              padding: const EdgeInsets.only(bottom: 6),
               child: Text(
                 widget.label!,
                 style: TextStyle(
                   fontSize: FontSizes.sm,
                   fontWeight: FontWeight.w600,
-                  color: colors.text,
+                  color: labelColor,
+                  letterSpacing: 0.3,
                 ),
               ),
             ),
           AnimatedContainer(
-            duration: AppAnimation.fast,
+            duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              color: colors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.md),
+              color: bgColor,
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: hasError
-                    ? colors.error
-                    : _isFocused
-                        ? colors.borderFocused
-                        : colors.border,
-                width: _isFocused ? 2 : 1,
+                color: borderColor,
+                width: _isFocused ? 1.5 : 1,
               ),
+              boxShadow: _isFocused && isDark
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFE53935).withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                  : _isFocused
+                      ? [
+                          BoxShadow(
+                            color: colors.primary.withOpacity(0.12),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
+                      : null,
             ),
             child: Row(
               children: [
                 if (widget.leftIcon != null)
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: Spacing.md, right: Spacing.sm),
+                        left: Spacing.base, right: Spacing.sm),
                     child: Icon(
                       widget.leftIcon,
                       size: 20,
-                      color:
-                          _isFocused ? colors.primary : colors.textMuted,
+                      color: iconColor,
                     ),
                   ),
                 Expanded(
@@ -142,19 +185,25 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
                     onSubmitted: widget.onSubmitted != null
                         ? (_) => widget.onSubmitted!()
                         : null,
+                    cursorColor:
+                        isDark ? const Color(0xFFE53935) : colors.primary,
                     style: TextStyle(
                       fontSize: FontSizes.base,
-                      color: colors.text,
+                      color: textColor,
+                      fontWeight: FontWeight.w400,
                     ),
                     decoration: InputDecoration(
                       hintText: widget.placeholder,
-                      hintStyle: TextStyle(color: colors.textMuted),
+                      hintStyle: TextStyle(
+                        color: hintColor,
+                        fontWeight: FontWeight.w400,
+                      ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                         left: widget.leftIcon != null ? 0 : Spacing.base,
                         right: Spacing.base,
-                        top: Spacing.md,
-                        bottom: Spacing.md,
+                        top: 16,
+                        bottom: 16,
                       ),
                     ),
                   ),
@@ -165,13 +214,13 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
                         setState(() => _obscureText = !_obscureText),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.md),
+                          horizontal: Spacing.base),
                       child: Icon(
                         _obscureText
                             ? Icons.visibility_off_outlined
                             : Icons.visibility_outlined,
                         size: 20,
-                        color: colors.textMuted,
+                        color: iconColor,
                       ),
                     ),
                   ),
@@ -180,11 +229,11 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
                     onTap: widget.onRightIconPress,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.md),
+                          horizontal: Spacing.base),
                       child: Icon(
                         widget.rightIcon,
                         size: 20,
-                        color: colors.textMuted,
+                        color: iconColor,
                       ),
                     ),
                   ),
@@ -193,20 +242,31 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
           ),
           if (hasError)
             Padding(
-              padding: const EdgeInsets.only(top: Spacing.xs),
-              child: Text(
-                widget.error!,
-                style: TextStyle(
-                    fontSize: FontSizes.xs, color: colors.error),
+              padding: const EdgeInsets.only(top: 6, left: 4),
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline, size: 14, color: colors.error),
+                  const SizedBox(width: 4),
+                  Text(
+                    widget.error!,
+                    style: TextStyle(
+                        fontSize: FontSizes.xs, color: colors.error),
+                  ),
+                ],
               ),
             ),
           if (widget.hint != null && !hasError)
             Padding(
-              padding: const EdgeInsets.only(top: Spacing.xs),
+              padding: const EdgeInsets.only(top: 6, left: 4),
               child: Text(
                 widget.hint!,
                 style: TextStyle(
-                    fontSize: FontSizes.xs, color: colors.textMuted),
+                  fontSize: FontSizes.xs,
+                  color: isDark
+                      ? Colors.white.withOpacity(0.35)
+                      : colors.textMuted,
+                  height: 1.3,
+                ),
               ),
             ),
         ],
