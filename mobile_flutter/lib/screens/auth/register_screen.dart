@@ -127,7 +127,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-    final bottom = MediaQuery.of(context).viewInsets.bottom;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(
@@ -142,10 +141,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           child: AuthBackground(
             child: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: const EdgeInsets.only(
                   left: 28,
                   right: 28,
-                  bottom: bottom > 0 ? 20 : 0,
+                  bottom: 20,
                 ),
                 child: FadeTransition(
                   opacity: _fadeAnim,
@@ -155,7 +156,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.05),
+                            height: MediaQuery.sizeOf(context).height * 0.05),
 
                         // ── Back Button ──
                         GestureDetector(

@@ -14,7 +14,9 @@ class AuthBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    // Use MediaQuery.sizeOf to avoid full widget tree rebuilds
+    // when keyboard opens/closes.
+    final size = MediaQuery.sizeOf(context);
 
     return Container(
       width: size.width,
