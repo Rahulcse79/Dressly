@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
-/// Payment record.
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Payment {
     pub id: Uuid,
@@ -31,7 +30,6 @@ pub enum PaymentStatus {
     Refunded,
 }
 
-/// Razorpay order creation response.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RazorpayOrder {
     pub id: String,
@@ -40,7 +38,6 @@ pub struct RazorpayOrder {
     pub status: String,
 }
 
-/// Razorpay webhook payload.
 #[derive(Debug, Deserialize)]
 pub struct RazorpayWebhookPayload {
     pub event: String,

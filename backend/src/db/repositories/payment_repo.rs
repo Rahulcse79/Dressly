@@ -3,11 +3,9 @@ use uuid::Uuid;
 use crate::db::models::payment::*;
 use crate::errors::AppResult;
 
-/// Repository for payment operations.
 pub struct PaymentRepository;
 
 impl PaymentRepository {
-    /// Create a payment record.
     pub async fn create(
         pool: &PgPool,
         subscription_id: Uuid,
@@ -32,7 +30,6 @@ impl PaymentRepository {
         Ok(payment)
     }
 
-    /// Update payment after capture.
     pub async fn update_captured(
         pool: &PgPool,
         razorpay_order_id: &str,
@@ -58,7 +55,6 @@ impl PaymentRepository {
         Ok(payment)
     }
 
-    /// Mark payment as failed.
     pub async fn mark_failed(
         pool: &PgPool,
         razorpay_order_id: &str,
@@ -82,7 +78,6 @@ impl PaymentRepository {
         Ok(())
     }
 
-    /// Get payments for a user.
     pub async fn list_by_user(pool: &PgPool, user_id: Uuid) -> AppResult<Vec<Payment>> {
         let payments = sqlx::query_as::<_, Payment>(
             "SELECT * FROM payments WHERE user_id = $1 ORDER BY created_at DESC"

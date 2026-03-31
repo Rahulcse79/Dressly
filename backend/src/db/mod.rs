@@ -7,7 +7,6 @@ use sqlx::PgPool;
 use std::sync::Arc;
 use crate::config::AppConfig;
 
-/// Initialize PostgreSQL connection pool with optimized settings.
 pub async fn init_db_pool(config: &Arc<AppConfig>) -> Result<PgPool, sqlx::Error> {
     let pool = PgPoolOptions::new()
         .max_connections(config.database.max_connections)
@@ -27,7 +26,6 @@ pub async fn init_db_pool(config: &Arc<AppConfig>) -> Result<PgPool, sqlx::Error
     Ok(pool)
 }
 
-/// Run database migrations.
 pub async fn run_migrations(pool: &PgPool) -> Result<(), sqlx::migrate::MigrateError> {
     tracing::info!("🔄 Running database migrations...");
     sqlx::migrate!("./src/db/migrations")

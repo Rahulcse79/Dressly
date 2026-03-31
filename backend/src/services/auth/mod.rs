@@ -11,19 +11,17 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use uuid::Uuid;
 
-/// JWT claims payload.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
-    pub sub: String,        // user_id
+    pub sub: String,      
     pub email: String,
     pub role: String,
-    pub iat: i64,           // issued at
-    pub exp: i64,           // expiry
-    pub jti: String,        // unique token ID
-    pub token_type: String, // "access" or "refresh"
+    pub iat: i64,          
+    pub exp: i64,         
+    pub jti: String,        
+    pub token_type: String,
 }
 
-/// Authentication service handling password hashing, JWT generation/verification.
 pub struct AuthService {
     config: Arc<AppConfig>,
 }
@@ -33,8 +31,6 @@ impl AuthService {
         Self { config }
     }
 
-    /// Hash a password using Argon2id (OWASP recommended).
-    /// Memory: 64MB, Iterations: 3, Parallelism: 4
     pub fn hash_password(&self, password: &str) -> AppResult<String> {
         let salt = SaltString::generate(&mut OsRng);
 
@@ -53,7 +49,6 @@ impl AuthService {
         Ok(password_hash)
     }
 
-    /// Verify a password against a stored hash.
     pub fn verify_password(&self, password: &str, password_hash: &str) -> AppResult<bool> {
         let parsed_hash = PasswordHash::new(password_hash)
             .map_err(|e| AppError::InternalError(format!("Invalid hash format: {}", e)))?;
@@ -67,7 +62,6 @@ impl AuthService {
         }
     }
 
-    /// Generate an access token (short-lived: 15min default).
     pub fn generate_access_token(&self, user: &UserWithProfile) -> AppResult<String> {
         let now = Utc::now();
         let expiry = now + Duration::seconds(self.config.jwt.access_token_expiry);
@@ -91,7 +85,6 @@ impl AuthService {
         Ok(token)
     }
 
-    /// Generate a refresh token (long-lived: 7 days default).
     pub fn generate_refresh_token(&self, user: &UserWithProfile) -> AppResult<String> {
         let now = Utc::now();
         let expiry = now + Duration::seconds(self.config.jwt.refresh_token_expiry);
@@ -115,11 +108,9 @@ impl AuthService {
         Ok(token)
     }
 
-    /// Validate and decode a JWT token.
     pub fn validate_token(&self, token: &str) -> AppResult<TokenData<Claims>> {
         let validation = Validation::default();
 
-        // Try access secret first, then refresh secret
         let token_data = decode::<Claims>(
             token,
             &DecodingKey::from_secret(self.config.jwt.access_secret.as_bytes()),
@@ -136,7 +127,6 @@ impl AuthService {
         Ok(token_data)
     }
 
-    /// Validate an access token specifically.
     pub fn validate_access_token(&self, token: &str) -> AppResult<Claims> {
         let validation = Validation::default();
         let token_data = decode::<Claims>(
@@ -152,7 +142,6 @@ impl AuthService {
         Ok(token_data.claims)
     }
 
-    /// Validate a refresh token specifically.
     pub fn validate_refresh_token(&self, token: &str) -> AppResult<Claims> {
         let validation = Validation::default();
         let token_data = decode::<Claims>(
@@ -168,13 +157,11 @@ impl AuthService {
         Ok(token_data.claims)
     }
 
-    /// Extract user_id from claims.
     pub fn extract_user_id(claims: &Claims) -> AppResult<Uuid> {
         Uuid::parse_str(&claims.sub)
             .map_err(|_| AppError::Unauthorized("Invalid user ID in token".into()))
     }
 
-    /// Extract role from claims.
     pub fn extract_role(claims: &Claims) -> UserRole {
         match claims.role.as_str() {
             "admin" => UserRole::Admin,
@@ -183,7 +170,6 @@ impl AuthService {
         }
     }
 
-    /// Validate password strength.
     pub fn validate_password_strength(password: &str) -> AppResult<()> {
         if password.len() < 8 {
             return Err(AppError::ValidationError("Password must be at least 8 characters".into()));

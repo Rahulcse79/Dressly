@@ -3,11 +3,9 @@ use uuid::Uuid;
 use crate::db::models::wardrobe::*;
 use crate::errors::AppResult;
 
-/// Repository for wardrobe-related database operations.
 pub struct WardrobeRepository;
 
 impl WardrobeRepository {
-    /// Add a new wardrobe item.
     pub async fn create(
         pool: &PgPool,
         user_id: Uuid,
@@ -37,7 +35,6 @@ impl WardrobeRepository {
         Ok(item)
     }
 
-    /// Get wardrobe items with pagination and filtering.
     pub async fn list(
         pool: &PgPool,
         user_id: Uuid,
@@ -47,7 +44,6 @@ impl WardrobeRepository {
         let per_page = params.per_page.unwrap_or(20).min(100);
         let offset = ((page.saturating_sub(1)) * per_page) as i64;
 
-        // Use optional filters for category and season
         match (&params.category, &params.season) {
             (Some(category), Some(season)) => {
                 let total: (i64,) = sqlx::query_as(
@@ -136,7 +132,6 @@ impl WardrobeRepository {
         }
     }
 
-    /// Get a single wardrobe item by ID (owned by user).
     pub async fn find_by_id(pool: &PgPool, user_id: Uuid, item_id: Uuid) -> AppResult<Option<WardrobeItem>> {
         let item = sqlx::query_as::<_, WardrobeItem>(
             "SELECT * FROM wardrobe_items WHERE id = $1 AND user_id = $2"
@@ -149,7 +144,6 @@ impl WardrobeRepository {
         Ok(item)
     }
 
-    /// Get multiple wardrobe items by IDs (for AI generation).
     pub async fn find_by_ids(pool: &PgPool, user_id: Uuid, item_ids: &[Uuid]) -> AppResult<Vec<WardrobeItem>> {
         let items = sqlx::query_as::<_, WardrobeItem>(
             "SELECT * FROM wardrobe_items WHERE user_id = $1 AND id = ANY($2)"
@@ -162,7 +156,6 @@ impl WardrobeRepository {
         Ok(items)
     }
 
-    /// Update a wardrobe item.
     pub async fn update(
         pool: &PgPool,
         user_id: Uuid,
@@ -198,7 +191,6 @@ impl WardrobeRepository {
         Ok(item)
     }
 
-    /// Delete a wardrobe item.
     pub async fn delete(pool: &PgPool, user_id: Uuid, item_id: Uuid) -> AppResult<bool> {
         let result = sqlx::query(
             "DELETE FROM wardrobe_items WHERE id = $1 AND user_id = $2"
@@ -211,7 +203,6 @@ impl WardrobeRepository {
         Ok(result.rows_affected() > 0)
     }
 
-    /// Count items for a user.
     pub async fn count_by_user(pool: &PgPool, user_id: Uuid) -> AppResult<i64> {
         let count: (i64,) = sqlx::query_as(
             "SELECT COUNT(*) FROM wardrobe_items WHERE user_id = $1"

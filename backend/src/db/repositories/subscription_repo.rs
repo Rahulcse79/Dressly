@@ -4,11 +4,9 @@ use crate::db::models::subscription::*;
 use crate::errors::AppResult;
 use chrono::Utc;
 
-/// Repository for subscription operations.
 pub struct SubscriptionRepository;
 
 impl SubscriptionRepository {
-    /// Create a new subscription.
     pub async fn create(
         pool: &PgPool,
         user_id: Uuid,
@@ -33,7 +31,6 @@ impl SubscriptionRepository {
         Ok(sub)
     }
 
-    /// Activate subscription after payment verification.
     pub async fn activate(
         pool: &PgPool,
         subscription_id: Uuid,
@@ -63,7 +60,6 @@ impl SubscriptionRepository {
         Ok(sub)
     }
 
-    /// Get active subscription for a user.
     pub async fn get_active(pool: &PgPool, user_id: Uuid) -> AppResult<Option<Subscription>> {
         let sub = sqlx::query_as::<_, Subscription>(
             r#"
@@ -80,7 +76,6 @@ impl SubscriptionRepository {
         Ok(sub)
     }
 
-    /// Find subscription by Razorpay order ID.
     pub async fn find_by_order_id(pool: &PgPool, order_id: &str) -> AppResult<Option<Subscription>> {
         let sub = sqlx::query_as::<_, Subscription>(
             "SELECT * FROM subscriptions WHERE razorpay_order_id = $1"
@@ -92,7 +87,6 @@ impl SubscriptionRepository {
         Ok(sub)
     }
 
-    /// Cancel subscription.
     pub async fn cancel(pool: &PgPool, subscription_id: Uuid) -> AppResult<()> {
         sqlx::query(
             "UPDATE subscriptions SET status = 'cancelled', cancelled_at = NOW() WHERE id = $1"
@@ -103,7 +97,6 @@ impl SubscriptionRepository {
         Ok(())
     }
 
-    /// List all subscriptions (admin).
     pub async fn list_all(
         pool: &PgPool,
         page: u32,
@@ -126,7 +119,6 @@ impl SubscriptionRepository {
         Ok((subs, total.0))
     }
 
-    /// Expire old subscriptions (cron job).
     pub async fn expire_old(pool: &PgPool) -> AppResult<u64> {
         let result = sqlx::query(
             "UPDATE subscriptions SET status = 'expired' WHERE status = 'active' AND expires_at < NOW()"

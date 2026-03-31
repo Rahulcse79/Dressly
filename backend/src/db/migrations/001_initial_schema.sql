@@ -1,9 +1,5 @@
--- Migration: 001_initial_schema
--- Description: Create all core tables for Dressly application
-
--- Custom ENUM types
 CREATE TYPE user_role AS ENUM ('user', 'pro', 'admin');
-CREATE TYPE clothing_category AS ENUM ('top', 'bottom', 'dress', 'outerwear', 'shoes', 'accessory', 'bag', 'jewelry', 'other');
+CREATE TYPE clothing_category AS ENUM ('top', 'bottom', 'dress', 'outerwear', 'shoes', 'other');
 CREATE TYPE season_type AS ENUM ('spring', 'summer', 'autumn', 'winter', 'allseason');
 CREATE TYPE generation_status AS ENUM ('pending', 'processing', 'completed', 'failed');
 CREATE TYPE plan_type AS ENUM ('free', 'pro');
@@ -11,13 +7,9 @@ CREATE TYPE subscription_status AS ENUM ('active', 'cancelled', 'expired', 'pend
 CREATE TYPE payment_status AS ENUM ('created', 'authorized', 'captured', 'failed', 'refunded');
 CREATE TYPE notification_type AS ENUM ('ai_generation_complete', 'subscription_activated', 'subscription_expiring', 'admin_announcement', 'style_tip', 'payment_success', 'payment_failed');
 
--- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- ============================================
--- USERS TABLE
--- ============================================
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -33,9 +25,6 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_users_active ON users(is_active) WHERE is_active = TRUE;
 
--- ============================================
--- USER PROFILES TABLE
--- ============================================
 CREATE TABLE user_profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
@@ -50,9 +39,6 @@ CREATE TABLE user_profiles (
 
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
 
--- ============================================
--- WARDROBE ITEMS TABLE
--- ============================================
 CREATE TABLE wardrobe_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -71,9 +57,6 @@ CREATE INDEX idx_wardrobe_user_id ON wardrobe_items(user_id);
 CREATE INDEX idx_wardrobe_category ON wardrobe_items(user_id, category);
 CREATE INDEX idx_wardrobe_season ON wardrobe_items(user_id, season);
 
--- ============================================
--- OUTFIT GENERATIONS TABLE
--- ============================================
 CREATE TABLE outfit_generations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -95,9 +78,6 @@ CREATE INDEX idx_generations_user_id ON outfit_generations(user_id);
 CREATE INDEX idx_generations_status ON outfit_generations(status);
 CREATE INDEX idx_generations_created ON outfit_generations(user_id, created_at DESC);
 
--- ============================================
--- SUBSCRIPTIONS TABLE
--- ============================================
 CREATE TABLE subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -118,9 +98,6 @@ CREATE INDEX idx_subscriptions_status ON subscriptions(status);
 CREATE INDEX idx_subscriptions_expires ON subscriptions(expires_at) WHERE status = 'active';
 CREATE UNIQUE INDEX idx_subscriptions_razorpay ON subscriptions(razorpay_order_id) WHERE razorpay_order_id IS NOT NULL;
 
--- ============================================
--- PAYMENTS TABLE
--- ============================================
 CREATE TABLE payments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     subscription_id UUID NOT NULL REFERENCES subscriptions(id) ON DELETE CASCADE,
@@ -141,9 +118,6 @@ CREATE INDEX idx_payments_user_id ON payments(user_id);
 CREATE INDEX idx_payments_subscription ON payments(subscription_id);
 CREATE UNIQUE INDEX idx_payments_razorpay ON payments(razorpay_payment_id) WHERE razorpay_payment_id IS NOT NULL;
 
--- ============================================
--- NOTIFICATIONS TABLE
--- ============================================
 CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -159,9 +133,6 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_unread ON notifications(user_id, is_read) WHERE is_read = FALSE;
 CREATE INDEX idx_notifications_created ON notifications(user_id, created_at DESC);
 
--- ============================================
--- USER SESSIONS TABLE
--- ============================================
 CREATE TABLE user_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -178,9 +149,6 @@ CREATE TABLE user_sessions (
 CREATE INDEX idx_sessions_user_id ON user_sessions(user_id);
 CREATE INDEX idx_sessions_device ON user_sessions(user_id, device_id);
 
--- ============================================
--- ADMIN CONFIG TABLE
--- ============================================
 CREATE TABLE admin_config (
     key VARCHAR(100) PRIMARY KEY,
     value JSONB NOT NULL,
@@ -188,7 +156,6 @@ CREATE TABLE admin_config (
     updated_by VARCHAR(255)
 );
 
--- Insert default config values
 INSERT INTO admin_config (key, value) VALUES
     ('pro_price_inr', '299'),
     ('free_daily_ai_quota', '5'),
@@ -197,9 +164,6 @@ INSERT INTO admin_config (key, value) VALUES
     ('announcement', 'null')
 ON CONFLICT (key) DO NOTHING;
 
--- ============================================
--- TRIGGERS for updated_at
--- ============================================
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN

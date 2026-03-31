@@ -6,7 +6,6 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tracing::{info, error, warn, instrument};
 
-/// Notification service for sending push notifications via FCM.
 pub struct NotificationService {
     config: Arc<AppConfig>,
     http_client: Client,
@@ -22,7 +21,6 @@ impl NotificationService {
         Self { config, http_client }
     }
 
-    /// Send a push notification to a specific device via FCM.
     #[instrument(skip(self, data), fields(title = %title))]
     pub async fn send_push(
         &self,
@@ -68,7 +66,6 @@ impl NotificationService {
         Ok(())
     }
 
-    /// Send push notification to multiple devices.
     pub async fn send_push_to_tokens(
         &self,
         tokens: &[String],
@@ -84,7 +81,6 @@ impl NotificationService {
         Ok(())
     }
 
-    /// Build notification data for different types.
     pub fn build_notification_data(
         notification_type: &NotificationType,
         extra: Option<serde_json::Value>,

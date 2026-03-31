@@ -4,7 +4,6 @@ use sqlx::FromRow;
 use uuid::Uuid;
 use validator::Validate;
 
-/// Clothing category enumeration.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(type_name = "clothing_category", rename_all = "lowercase")]
 pub enum ClothingCategory {
@@ -13,13 +12,9 @@ pub enum ClothingCategory {
     Dress,
     Outerwear,
     Shoes,
-    Accessory,
-    Bag,
-    Jewelry,
     Other,
 }
 
-/// Season enumeration for wardrobe items.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(type_name = "season_type", rename_all = "lowercase")]
 pub enum Season {
@@ -30,7 +25,6 @@ pub enum Season {
     AllSeason,
 }
 
-/// Wardrobe item model.
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct WardrobeItem {
     pub id: Uuid,
@@ -46,7 +40,6 @@ pub struct WardrobeItem {
     pub updated_at: DateTime<Utc>,
 }
 
-/// Request to add a wardrobe item.
 #[derive(Debug, Deserialize, Validate)]
 pub struct AddWardrobeItemRequest {
     pub category: ClothingCategory,
@@ -59,7 +52,6 @@ pub struct AddWardrobeItemRequest {
     pub metadata: Option<serde_json::Value>,
 }
 
-/// Request to update a wardrobe item.
 #[derive(Debug, Deserialize, Validate)]
 pub struct UpdateWardrobeItemRequest {
     pub category: Option<ClothingCategory>,
@@ -72,7 +64,6 @@ pub struct UpdateWardrobeItemRequest {
     pub metadata: Option<serde_json::Value>,
 }
 
-/// Paginated list query parameters.
 #[derive(Debug, Deserialize)]
 pub struct PaginationParams {
     pub page: Option<u32>,
@@ -81,7 +72,6 @@ pub struct PaginationParams {
     pub season: Option<Season>,
 }
 
-/// Paginated response wrapper.
 #[derive(Debug, Serialize)]
 pub struct PaginatedResponse<T: Serialize> {
     pub data: Vec<T>,

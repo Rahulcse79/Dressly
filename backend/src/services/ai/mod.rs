@@ -7,8 +7,6 @@ use std::sync::Arc;
 use std::time::Instant;
 use tracing::{info, error, instrument};
 
-/// AI service for Gemini API integration.
-/// Handles outfit generation, dress code analysis, and image processing.
 pub struct AiService {
     config: Arc<AppConfig>,
     http_client: Client,
@@ -25,21 +23,17 @@ impl AiService {
         Self { config, http_client }
     }
 
-    /// Generate outfit recommendation using Gemini multimodal API.
-    /// Takes text prompt + multiple images → returns AI analysis with style score.
     #[instrument(skip(self, image_data), fields(prompt_len = prompt.len(), image_count = image_data.len()))]
     pub async fn generate_outfit(
         &self,
         prompt: &str,
-        image_data: Vec<(String, Vec<u8>)>, // (mime_type, bytes)
+        image_data: Vec<(String, Vec<u8>)>, 
         occasion: Option<&str>,
     ) -> AppResult<AiGenerationResult> {
         let start = Instant::now();
 
-        // Build Gemini request with multimodal parts
         let mut parts: Vec<GeminiPart> = Vec::new();
 
-        // Add system prompt for fashion advisory
         let system_prompt = format!(
             "You are Dressly, an expert AI fashion advisor. Analyze the provided clothing items \
              and create the perfect outfit combination. Consider color theory, style matching, \
@@ -59,7 +53,6 @@ impl AiService {
 
         parts.push(GeminiPart::Text { text: system_prompt });
 
-        // Add images as inline data
         for (mime_type, bytes) in &image_data {
             let base64_data = base64::engine::general_purpose::STANDARD.encode(bytes);
             parts.push(GeminiPart::InlineData {
@@ -80,7 +73,6 @@ impl AiService {
             },
         };
 
-        // Call Gemini API
         let url = format!(
             "{}/models/{}:generateContent?key={}",
             self.config.gemini.api_url,
@@ -112,7 +104,6 @@ impl AiService {
 
         let latency_ms = start.elapsed().as_millis() as i64;
 
-        // Extract AI response
         let ai_text = gemini_response
             .candidates
             .as_ref()
@@ -121,7 +112,6 @@ impl AiService {
             .and_then(|p| p.text.as_ref())
             .ok_or_else(|| AppError::AiServiceError("Empty AI response".into()))?;
 
-        // Parse style score from response
         let style_score = self.extract_style_score(ai_text);
 
         info!(
@@ -134,11 +124,10 @@ impl AiService {
             ai_feedback: ai_text.clone(),
             style_score,
             latency_ms,
-            tokens_used: 0, // Gemini doesn't always return token count in the same way
+            tokens_used: 0,
         })
     }
 
-    /// Analyze a dress code from a photo.
     #[instrument(skip(self, image_data))]
     pub async fn analyze_dress_code(
         &self,
@@ -159,16 +148,13 @@ impl AiService {
         self.generate_outfit(&prompt, vec![image_data], occasion).await
     }
 
-    /// Extract numeric style score from AI text response.
     fn extract_style_score(&self, text: &str) -> f64 {
-        // Try to parse JSON and extract style_score
         if let Ok(json) = serde_json::from_str::<serde_json::Value>(text) {
             if let Some(score) = json.get("style_score").and_then(|v| v.as_f64()) {
                 return score.min(100.0).max(0.0);
             }
         }
 
-        // Fallback: look for patterns like "STYLE_SCORE: 85" or "style_score": 85
         for line in text.lines() {
             if line.to_lowercase().contains("style_score") || line.to_lowercase().contains("score") {
                 if let Some(num) = line
@@ -183,12 +169,10 @@ impl AiService {
             }
         }
 
-        // Default score
         75.0
     }
 }
 
-/// Result from AI generation.
 pub struct AiGenerationResult {
     pub ai_feedback: String,
     pub style_score: f64,

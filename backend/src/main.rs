@@ -17,7 +17,6 @@ use dressly_backend::workers;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // ── Initialize structured logging ───────────────────────────────
     tracing_subscriber::registry()
         .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
             EnvFilter::new("dressly_backend=debug,actix_web=info")
@@ -25,39 +24,33 @@ async fn main() -> std::io::Result<()> {
         .with(tracing_subscriber::fmt::layer().json())
         .init();
 
-    info!("🚀 Starting Dressly Backend Server...");
+    info!("Starting Dressly Backend Server...");
 
-    // ── Load configuration ──────────────────────────────────────────
     let config = AppConfig::load().expect("Failed to load configuration");
-    info!("✅ Configuration loaded");
+    info!("Configuration loaded");
 
-    // ── Initialize PostgreSQL connection pool ───────────────────────
     let db_pool = db::init_db_pool(&config)
         .await
         .expect("Failed to initialize database pool");
 
-    // ── Initialize Redis ────────────────────────────────────────────
     let redis_service = RedisService::new(&config)
         .expect("Failed to initialize Redis service");
-    info!("✅ Redis service initialized");
+    info!("Redis service initialized");
 
-    // ── Initialize services ─────────────────────────────────────────
     let auth_service = AuthService::new(config.clone());
     let ai_service = AiService::new(config.clone());
     let payment_service = PaymentService::new(config.clone());
     let notification_service = NotificationService::new(config.clone());
     let ws_manager = WsManager::new(config.clone());
 
-    info!("✅ All services initialized");
+    info!("All services initialized");
 
-    // ── Start background workers ────────────────────────────────────
     let worker_pool = Arc::new(db_pool.clone());
     tokio::spawn(async move {
         workers::start_subscription_worker(worker_pool).await;
     });
-    info!("✅ Background workers started");
+    info!("Background workers started");
 
-    // ── Wrap in web::Data (Arc) before the closure ──────────────────
     let db_data = web::Data::new(db_pool);
     let auth_data = web::Data::new(auth_service);
     let redis_data = web::Data::new(redis_service);
@@ -67,20 +60,16 @@ async fn main() -> std::io::Result<()> {
     let ws_data = web::Data::new(ws_manager);
     let config_data = web::Data::from(config);
 
-    // ── Configure and start HTTP server ─────────────────────────────
     let server_host = config_data.server.host.clone();
     let server_port = config_data.server.port;
     let server_workers = config_data.server.workers;
 
     info!(
-        "🌐 Server starting on {}:{}  (workers: {})",
+        "Server starting on {}:{}  (workers: {})",
         server_host, server_port, server_workers
     );
 
     HttpServer::new(move || {
-        // CORS configuration
-        // Note: allow_any_origin() + supports_credentials() violates CORS spec.
-        // In production, use .allowed_origin("https://your-app.com")
         let cors = Cors::default()
             .allow_any_origin()
             .allow_any_method()
@@ -88,11 +77,9 @@ async fn main() -> std::io::Result<()> {
             .max_age(3600);
 
         App::new()
-            // Global middleware
             .wrap(cors)
             .wrap(tracing_actix_web::TracingLogger::default())
 
-            // Shared application state
             .app_data(db_data.clone())
             .app_data(auth_data.clone())
             .app_data(redis_data.clone())
@@ -102,10 +89,8 @@ async fn main() -> std::io::Result<()> {
             .app_data(ws_data.clone())
             .app_data(config_data.clone())
 
-            // JSON payload configuration
-            .app_data(web::JsonConfig::default().limit(10 * 1024 * 1024)) // 10MB
+            .app_data(web::JsonConfig::default().limit(10 * 1024 * 1024))
 
-            // Configure all routes
             .configure(configure_routes)
     })
     .workers(server_workers)

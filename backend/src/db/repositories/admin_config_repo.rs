@@ -2,11 +2,9 @@ use sqlx::PgPool;
 use crate::db::models::admin_config::*;
 use crate::errors::AppResult;
 
-/// Repository for admin config operations.
 pub struct AdminConfigRepository;
 
 impl AdminConfigRepository {
-    /// Get all config entries.
     pub async fn get_all(pool: &PgPool) -> AppResult<Vec<AdminConfig>> {
         let configs = sqlx::query_as::<_, AdminConfig>(
             "SELECT * FROM admin_config ORDER BY key"
@@ -17,7 +15,6 @@ impl AdminConfigRepository {
         Ok(configs)
     }
 
-    /// Get a single config value by key.
     pub async fn get_by_key(pool: &PgPool, key: &str) -> AppResult<Option<AdminConfig>> {
         let config = sqlx::query_as::<_, AdminConfig>(
             "SELECT * FROM admin_config WHERE key = $1"
@@ -29,7 +26,6 @@ impl AdminConfigRepository {
         Ok(config)
     }
 
-    /// Upsert a config entry.
     pub async fn upsert(
         pool: &PgPool,
         key: &str,
@@ -56,7 +52,6 @@ impl AdminConfigRepository {
         Ok(config)
     }
 
-    /// Batch update configs.
     pub async fn batch_update(
         pool: &PgPool,
         entries: &[ConfigEntry],
@@ -90,7 +85,6 @@ impl AdminConfigRepository {
         Ok(results)
     }
 
-    /// Get pro price from config.
     pub async fn get_pro_price(pool: &PgPool) -> AppResult<i64> {
         let config = Self::get_by_key(pool, CONFIG_PRO_PRICE_INR).await?;
         match config {
@@ -102,7 +96,6 @@ impl AdminConfigRepository {
         }
     }
 
-    /// Get free daily AI quota from config.
     pub async fn get_free_quota(pool: &PgPool) -> AppResult<i32> {
         let config = Self::get_by_key(pool, CONFIG_FREE_DAILY_QUOTA).await?;
         match config {

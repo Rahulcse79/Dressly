@@ -3,11 +3,9 @@ use uuid::Uuid;
 use crate::db::models::generation::*;
 use crate::errors::AppResult;
 
-/// Repository for AI generation operations.
 pub struct GenerationRepository;
 
 impl GenerationRepository {
-    /// Create a new generation record.
     pub async fn create(
         pool: &PgPool,
         user_id: Uuid,
@@ -34,7 +32,6 @@ impl GenerationRepository {
         Ok(gen)
     }
 
-    /// Update generation with AI result.
     pub async fn update_result(
         pool: &PgPool,
         generation_id: Uuid,
@@ -74,7 +71,6 @@ impl GenerationRepository {
         Ok(gen)
     }
 
-    /// Update generation status.
     pub async fn update_status(
         pool: &PgPool,
         generation_id: Uuid,
@@ -88,7 +84,6 @@ impl GenerationRepository {
         Ok(())
     }
 
-    /// Get generation by ID.
     pub async fn find_by_id(pool: &PgPool, user_id: Uuid, generation_id: Uuid) -> AppResult<Option<OutfitGeneration>> {
         let gen = sqlx::query_as::<_, OutfitGeneration>(
             "SELECT * FROM outfit_generations WHERE id = $1 AND user_id = $2"
@@ -101,7 +96,6 @@ impl GenerationRepository {
         Ok(gen)
     }
 
-    /// List generations for a user (paginated).
     pub async fn list_by_user(
         pool: &PgPool,
         user_id: Uuid,
@@ -129,7 +123,6 @@ impl GenerationRepository {
         Ok((generations, total.0))
     }
 
-    /// Count today's generations for rate limiting.
     pub async fn count_today_by_user(pool: &PgPool, user_id: Uuid) -> AppResult<i32> {
         let count: (i64,) = sqlx::query_as(
             r#"

@@ -2,8 +2,6 @@ use thiserror::Error;
 use actix_web::{HttpResponse, ResponseError};
 use serde::Serialize;
 
-/// Centralized error types for the Dressly application.
-/// Each variant maps to a specific HTTP status code and error response.
 #[derive(Debug, Error)]
 pub enum AppError {
     #[error("Authentication failed: {0}")]
@@ -55,7 +53,6 @@ pub enum AppError {
     ServiceUnavailable(String),
 }
 
-/// Standard error response body sent to clients.
 #[derive(Debug, Serialize)]
 pub struct ErrorResponse {
     pub success: bool,
@@ -154,5 +151,4 @@ impl From<anyhow::Error> for AppError {
     }
 }
 
-/// Result type alias for Dressly operations.
 pub type AppResult<T> = Result<T, AppError>;

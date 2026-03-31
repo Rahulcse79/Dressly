@@ -3,11 +3,9 @@ use uuid::Uuid;
 use crate::db::models::session::UserSession;
 use crate::errors::AppResult;
 
-/// Repository for user session management.
 pub struct SessionRepository;
 
 impl SessionRepository {
-    /// Create or update a session for a device.
     pub async fn upsert(
         pool: &PgPool,
         user_id: Uuid,
@@ -40,7 +38,6 @@ impl SessionRepository {
         Ok(session)
     }
 
-    /// Get all FCM tokens for a user (for sending push notifications).
     pub async fn get_fcm_tokens(pool: &PgPool, user_id: Uuid) -> AppResult<Vec<String>> {
         let tokens: Vec<(Option<String>,)> = sqlx::query_as(
             "SELECT fcm_token FROM user_sessions WHERE user_id = $1 AND fcm_token IS NOT NULL"
@@ -52,7 +49,6 @@ impl SessionRepository {
         Ok(tokens.into_iter().filter_map(|t| t.0).collect())
     }
 
-    /// Update FCM token for a device.
     pub async fn update_fcm_token(
         pool: &PgPool,
         user_id: Uuid,
@@ -73,7 +69,6 @@ impl SessionRepository {
         Ok(())
     }
 
-    /// Delete all sessions for a user (logout everywhere).
     pub async fn delete_all(pool: &PgPool, user_id: Uuid) -> AppResult<()> {
         sqlx::query("DELETE FROM user_sessions WHERE user_id = $1")
             .bind(user_id)

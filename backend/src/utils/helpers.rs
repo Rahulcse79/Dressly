@@ -1,18 +1,15 @@
 use rand::Rng;
 
-/// Generate a random 6-digit OTP.
 pub fn generate_otp() -> String {
     let mut rng = rand::thread_rng();
     let otp: u32 = rng.gen_range(100000..999999);
     otp.to_string()
 }
 
-/// Sanitize email by trimming and lowercasing.
 pub fn sanitize_email(email: &str) -> String {
     email.trim().to_lowercase()
 }
 
-/// Truncate a string to max length with ellipsis.
 pub fn truncate(s: &str, max_len: usize) -> String {
     if s.len() <= max_len {
         s.to_string()
@@ -21,7 +18,6 @@ pub fn truncate(s: &str, max_len: usize) -> String {
     }
 }
 
-/// Validate that a file is an image based on content type.
 pub fn is_valid_image_type(content_type: &str) -> bool {
     matches!(
         content_type,
@@ -29,7 +25,6 @@ pub fn is_valid_image_type(content_type: &str) -> bool {
     )
 }
 
-/// Calculate file size in MB from bytes.
 pub fn bytes_to_mb(bytes: usize) -> f64 {
     bytes as f64 / (1024.0 * 1024.0)
 }

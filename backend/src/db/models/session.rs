@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
-/// User device session for multi-device management.
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct UserSession {
     pub id: Uuid,

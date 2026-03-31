@@ -6,13 +6,11 @@ use crate::config::AppConfig;
 use crate::errors::{AppError, AppResult};
 use tracing::info;
 
-/// Redis service for caching, sessions, rate limiting, and pub/sub.
 pub struct RedisService {
     pool: Pool,
 }
 
 impl RedisService {
-    /// Initialize Redis connection pool.
     pub fn new(config: &Arc<AppConfig>) -> AppResult<Self> {
         let cfg = RedisConfig::from_url(&config.redis.url);
         let pool = cfg
@@ -23,7 +21,6 @@ impl RedisService {
         Ok(Self { pool })
     }
 
-    /// Get a connection from the pool.
     pub async fn get_conn(&self) -> AppResult<Connection> {
         self.pool
             .get()
@@ -31,9 +28,6 @@ impl RedisService {
             .map_err(|e| AppError::CacheError(format!("Redis connection error: {}", e)))
     }
 
-    // ── Session Management ──────────────────────────────────────────
-
-    /// Store a user session in Redis.
     pub async fn store_session(
         &self,
         user_id: &Uuid,
@@ -52,7 +46,6 @@ impl RedisService {
         Ok(())
     }
 
-    /// Check if a session is valid.
     pub async fn is_session_valid(&self, user_id: &Uuid, token_jti: &str) -> AppResult<bool> {
         let mut conn = self.get_conn().await?;
         let key = format!("session:{}:{}", user_id, token_jti);
@@ -61,7 +54,6 @@ impl RedisService {
         Ok(exists)
     }
 
-    /// Invalidate a specific session.
     pub async fn invalidate_session(&self, user_id: &Uuid, token_jti: &str) -> AppResult<()> {
         let mut conn = self.get_conn().await?;
         let key = format!("session:{}:{}", user_id, token_jti);
@@ -70,12 +62,10 @@ impl RedisService {
         Ok(())
     }
 
-    /// Invalidate all sessions for a user.
     pub async fn invalidate_all_sessions(&self, user_id: &Uuid) -> AppResult<()> {
         let mut conn = self.get_conn().await?;
         let pattern = format!("session:{}:*", user_id);
 
-        // Use SCAN instead of KEYS to avoid O(N) blocking on large datasets
         let mut cursor: u64 = 0;
         loop {
             let (next_cursor, keys): (u64, Vec<String>) = redis::cmd("SCAN")
@@ -102,15 +92,12 @@ impl RedisService {
         Ok(())
     }
 
-    // ── Caching ─────────────────────────────────────────────────────
-
-    /// Cache user data.
     pub async fn cache_user(&self, user_id: &Uuid, data: &str) -> AppResult<()> {
         let mut conn = self.get_conn().await?;
         let key = format!("cache:user:{}", user_id);
         let _: () = redis::cmd("SETEX")
             .arg(&key)
-            .arg(900) // 15 minutes TTL
+            .arg(900) 
             .arg(data)
             .query_async(&mut *conn)
             .await
@@ -118,7 +105,6 @@ impl RedisService {
         Ok(())
     }
 
-    /// Get cached user data.
     pub async fn get_cached_user(&self, user_id: &Uuid) -> AppResult<Option<String>> {
         let mut conn = self.get_conn().await?;
         let key = format!("cache:user:{}", user_id);
@@ -127,7 +113,6 @@ impl RedisService {
         Ok(data)
     }
 
-    /// Invalidate user cache.
     pub async fn invalidate_user_cache(&self, user_id: &Uuid) -> AppResult<()> {
         let mut conn = self.get_conn().await?;
         let key = format!("cache:user:{}", user_id);
@@ -136,9 +121,6 @@ impl RedisService {
         Ok(())
     }
 
-    // ── Rate Limiting (Sliding Window) ──────────────────────────────
-
-    /// Check and increment rate limit. Returns (allowed, remaining).
     pub async fn check_rate_limit(
         &self,
         key: &str,
@@ -151,7 +133,6 @@ impl RedisService {
 
         let full_key = format!("ratelimit:{}", key);
 
-        // Remove old entries outside the window
         let _: () = redis::cmd("ZREMRANGEBYSCORE")
             .arg(&full_key)
             .arg("-inf")
@@ -160,7 +141,6 @@ impl RedisService {
             .await
             .map_err(|e| AppError::CacheError(e.to_string()))?;
 
-        // Count current entries
         let count: u32 = redis::cmd("ZCARD")
             .arg(&full_key)
             .query_async(&mut *conn)
@@ -171,7 +151,6 @@ impl RedisService {
             return Ok((false, 0));
         }
 
-        // Add new entry
         let member = format!("{}:{}", now, uuid::Uuid::new_v4());
         let _: () = redis::cmd("ZADD")
             .arg(&full_key)
@@ -181,7 +160,6 @@ impl RedisService {
             .await
             .map_err(|e| AppError::CacheError(e.to_string()))?;
 
-        // Set TTL on the key
         let _: () = redis::cmd("EXPIRE")
             .arg(&full_key)
             .arg(window_seconds)
@@ -192,9 +170,6 @@ impl RedisService {
         Ok((true, max_requests - count - 1))
     }
 
-    // ── Config Cache ────────────────────────────────────────────────
-
-    /// Cache a config value.
     pub async fn set_config(&self, key: &str, value: &str) -> AppResult<()> {
         let mut conn = self.get_conn().await?;
         let redis_key = format!("config:{}", key);
@@ -203,7 +178,6 @@ impl RedisService {
         Ok(())
     }
 
-    /// Get a cached config value.
     pub async fn get_config(&self, key: &str) -> AppResult<Option<String>> {
         let mut conn = self.get_conn().await?;
         let redis_key = format!("config:{}", key);
@@ -212,9 +186,6 @@ impl RedisService {
         Ok(value)
     }
 
-    // ── AI Generation Queue ─────────────────────────────────────────
-
-    /// Add AI generation task to Redis Stream.
     pub async fn enqueue_ai_task(
         &self,
         generation_id: &Uuid,

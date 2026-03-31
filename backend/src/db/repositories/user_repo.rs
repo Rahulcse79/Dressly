@@ -3,12 +3,9 @@ use uuid::Uuid;
 use crate::db::models::user::*;
 use crate::errors::AppResult;
 
-/// Repository for user-related database operations.
-/// All queries are compile-time checked by SQLx.
 pub struct UserRepository;
 
 impl UserRepository {
-    /// Create a new user and their profile in a single transaction.
     pub async fn create_user(
         pool: &PgPool,
         email: &str,
@@ -45,7 +42,6 @@ impl UserRepository {
         Ok(user)
     }
 
-    /// Find user by email (for login).
     pub async fn find_by_email(pool: &PgPool, email: &str) -> AppResult<Option<User>> {
         let user = sqlx::query_as::<_, User>(
             r#"
@@ -62,7 +58,6 @@ impl UserRepository {
         Ok(user)
     }
 
-    /// Find user by ID.
     pub async fn find_by_id(pool: &PgPool, user_id: Uuid) -> AppResult<Option<User>> {
         let user = sqlx::query_as::<_, User>(
             r#"
@@ -78,7 +73,6 @@ impl UserRepository {
         Ok(user)
     }
 
-    /// Get user with profile combined.
     pub async fn get_user_with_profile(pool: &PgPool, user_id: Uuid) -> AppResult<Option<UserWithProfile>> {
         let result = sqlx::query_as::<_, UserWithProfile>(
             r#"
@@ -99,7 +93,6 @@ impl UserRepository {
         Ok(result)
     }
 
-    /// Update user profile.
     pub async fn update_profile(
         pool: &PgPool,
         user_id: Uuid,
@@ -129,7 +122,6 @@ impl UserRepository {
         Ok(profile)
     }
 
-    /// Update user role (admin operation).
     pub async fn update_role(pool: &PgPool, user_id: Uuid, role: &UserRole) -> AppResult<()> {
         sqlx::query("UPDATE users SET role = $2 WHERE id = $1")
             .bind(user_id)
@@ -139,7 +131,6 @@ impl UserRepository {
         Ok(())
     }
 
-    /// Set user verified status.
     pub async fn set_verified(pool: &PgPool, user_id: Uuid) -> AppResult<()> {
         sqlx::query("UPDATE users SET is_verified = TRUE WHERE id = $1")
             .bind(user_id)
@@ -148,7 +139,6 @@ impl UserRepository {
         Ok(())
     }
 
-    /// Soft delete user (set is_active = false).
     pub async fn soft_delete(pool: &PgPool, user_id: Uuid) -> AppResult<()> {
         sqlx::query("UPDATE users SET is_active = FALSE WHERE id = $1")
             .bind(user_id)
@@ -157,7 +147,6 @@ impl UserRepository {
         Ok(())
     }
 
-    /// List all users with pagination (admin).
     pub async fn list_users(
         pool: &PgPool,
         page: u32,
@@ -190,7 +179,6 @@ impl UserRepository {
         Ok((users, total.0))
     }
 
-    /// Update user's password hash.
     pub async fn update_password(pool: &PgPool, user_id: Uuid, password_hash: &str) -> AppResult<()> {
         sqlx::query("UPDATE users SET password_hash = $2 WHERE id = $1")
             .bind(user_id)
@@ -200,7 +188,6 @@ impl UserRepository {
         Ok(())
     }
 
-    /// Update avatar URL.
     pub async fn update_avatar(pool: &PgPool, user_id: Uuid, avatar_url: &str) -> AppResult<()> {
         sqlx::query("UPDATE user_profiles SET avatar_url = $2 WHERE user_id = $1")
             .bind(user_id)

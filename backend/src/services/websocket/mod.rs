@@ -12,7 +12,6 @@ use tracing::{info, warn, error, debug};
 
 use crate::config::AppConfig;
 
-/// WebSocket message types (client → server).
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
 pub enum WsClientMessage {
@@ -24,7 +23,6 @@ pub enum WsClientMessage {
     Unsubscribe { channel: String },
 }
 
-/// WebSocket message types (server → client).
 #[derive(Debug, Serialize, Clone)]
 #[serde(tag = "type")]
 pub enum WsServerMessage {
@@ -54,14 +52,9 @@ pub enum WsServerMessage {
     Connected { user_id: String, server_time: i64 },
 }
 
-/// Per-user WebSocket sender channel.
 pub type WsSender = mpsc::UnboundedSender<WsServerMessage>;
 
-/// Global WebSocket connection manager.
-/// Uses DashMap (lock-free concurrent HashMap) for O(1) lookups.
-/// Each user has exactly 1 WebSocket connection.
 pub struct WsManager {
-    /// Map of user_id → sender channel
     connections: Arc<DashMap<Uuid, WsSender>>,
     config: Arc<AppConfig>,
 }
@@ -74,21 +67,16 @@ impl WsManager {
         }
     }
 
-    /// Get the number of active connections.
     pub fn connection_count(&self) -> usize {
         self.connections.len()
     }
 
-    /// Check if a user is connected.
     pub fn is_connected(&self, user_id: &Uuid) -> bool {
         self.connections.contains_key(user_id)
     }
 
-    /// Register a new WebSocket connection for a user.
-    /// If user already has a connection, the old one is replaced (1 user = 1 connection).
     pub fn register(&self, user_id: Uuid, sender: WsSender) {
         if let Some(old_sender) = self.connections.insert(user_id, sender) {
-            // Close the old connection gracefully
             let _ = old_sender.send(WsServerMessage::Error {
                 message: "Connection replaced by new session".to_string(),
             });
@@ -98,14 +86,12 @@ impl WsManager {
         }
     }
 
-    /// Remove a user's WebSocket connection.
     pub fn unregister(&self, user_id: &Uuid) {
         if self.connections.remove(user_id).is_some() {
             info!(user_id = %user_id, "WebSocket connection unregistered");
         }
     }
 
-    /// Send a message to a specific user.
     pub fn send_to_user(&self, user_id: &Uuid, message: WsServerMessage) -> bool {
         if let Some(sender) = self.connections.get(user_id) {
             match sender.send(message) {
@@ -122,7 +108,6 @@ impl WsManager {
         }
     }
 
-    /// Broadcast a message to all connected users.
     pub fn broadcast(&self, message: WsServerMessage) {
         let mut failed_ids = Vec::new();
 
@@ -132,20 +117,16 @@ impl WsManager {
             }
         }
 
-        // Clean up failed connections
         for id in failed_ids {
             self.connections.remove(&id);
         }
     }
 
-    /// Get a reference to the connections map.
     pub fn connections(&self) -> Arc<DashMap<Uuid, WsSender>> {
         self.connections.clone()
     }
 }
 
-/// Handle a WebSocket connection for a single user.
-/// Implements heartbeat (ping/pong) and message routing.
 pub async fn handle_ws_connection(
     mut session: actix_ws::Session,
     mut msg_stream: actix_ws::MessageStream,
@@ -155,26 +136,20 @@ pub async fn handle_ws_connection(
 ) {
     let heartbeat_interval = Duration::from_secs(config.websocket.heartbeat_interval);
     let client_timeout = Duration::from_secs(config.websocket.client_timeout);
-
-    // Create mpsc channel for this user
     let (tx, mut rx) = mpsc::unbounded_channel::<WsServerMessage>();
 
-    // Register this connection
     ws_manager.register(user_id, tx);
 
-    // Send connected message
     let connected_msg = WsServerMessage::Connected {
         user_id: user_id.to_string(),
         server_time: chrono::Utc::now().timestamp(),
     };
     let _ = session.text(serde_json::to_string(&connected_msg).unwrap_or_default()).await;
-
     let mut last_heartbeat = Instant::now();
     let mut heartbeat_timer = interval(heartbeat_interval);
 
     loop {
         tokio::select! {
-            // Handle incoming WebSocket messages from client
             Some(msg) = msg_stream.next() => {
                 match msg {
                     Ok(actix_ws::Message::Text(text)) => {
@@ -200,7 +175,6 @@ pub async fn handle_ws_connection(
                 }
             }
 
-            // Handle outgoing messages to client (from server/other services)
             Some(server_msg) = rx.recv() => {
                 match serde_json::to_string(&server_msg) {
                     Ok(json) => {
@@ -214,7 +188,6 @@ pub async fn handle_ws_connection(
                 }
             }
 
-            // Heartbeat tick
             _ = heartbeat_timer.tick() => {
                 if Instant::now().duration_since(last_heartbeat) > client_timeout {
                     warn!(user_id = %user_id, "WebSocket client timeout, disconnecting");
@@ -225,13 +198,11 @@ pub async fn handle_ws_connection(
         }
     }
 
-    // Cleanup
     ws_manager.unregister(&user_id);
     let _ = session.close(None).await;
     info!(user_id = %user_id, "WebSocket connection closed");
 }
 
-/// Process a message from the client.
 async fn handle_client_message(
     session: &mut actix_ws::Session,
     text: &str,

@@ -4,7 +4,6 @@ use sqlx::FromRow;
 use uuid::Uuid;
 use validator::Validate;
 
-/// User role enumeration for RBAC.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(type_name = "user_role", rename_all = "lowercase")]
 pub enum UserRole {
@@ -19,7 +18,6 @@ impl Default for UserRole {
     }
 }
 
-/// Core user model mapped to the `users` table.
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct User {
     pub id: Uuid,
@@ -33,7 +31,6 @@ pub struct User {
     pub updated_at: DateTime<Utc>,
 }
 
-/// User profile with extended fashion preferences.
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct UserProfile {
     pub id: Uuid,
@@ -47,7 +44,6 @@ pub struct UserProfile {
     pub updated_at: DateTime<Utc>,
 }
 
-/// Combined user + profile view for API responses.
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct UserWithProfile {
     pub id: Uuid,
@@ -64,7 +60,6 @@ pub struct UserWithProfile {
     pub created_at: DateTime<Utc>,
 }
 
-/// Registration request DTO with validation.
 #[derive(Debug, Deserialize, Validate)]
 pub struct RegisterRequest {
     #[validate(email(message = "Invalid email format"))]
@@ -75,7 +70,6 @@ pub struct RegisterRequest {
     pub display_name: Option<String>,
 }
 
-/// Login request DTO.
 #[derive(Debug, Deserialize, Validate)]
 pub struct LoginRequest {
     #[validate(email(message = "Invalid email format"))]
@@ -87,7 +81,6 @@ pub struct LoginRequest {
     pub platform: Option<String>,
 }
 
-/// Token pair response.
 #[derive(Debug, Serialize)]
 pub struct TokenResponse {
     pub access_token: String,
@@ -97,7 +90,6 @@ pub struct TokenResponse {
     pub user: UserWithProfile,
 }
 
-/// Profile update request.
 #[derive(Debug, Deserialize, Validate)]
 pub struct UpdateProfileRequest {
     #[validate(length(min = 2, max = 50))]
@@ -108,13 +100,11 @@ pub struct UpdateProfileRequest {
     pub color_preferences: Option<serde_json::Value>,
 }
 
-/// Refresh token request.
 #[derive(Debug, Deserialize)]
 pub struct RefreshTokenRequest {
     pub refresh_token: String,
 }
 
-/// Password reset request.
 #[derive(Debug, Deserialize, Validate)]
 pub struct ResetPasswordRequest {
     pub token: String,

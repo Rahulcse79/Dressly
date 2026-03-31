@@ -9,7 +9,6 @@ use tracing::{info, error, instrument};
 
 type HmacSha256 = Hmac<Sha256>;
 
-/// Payment service for Razorpay integration.
 pub struct PaymentService {
     config: Arc<AppConfig>,
     http_client: Client,
@@ -17,7 +16,7 @@ pub struct PaymentService {
 
 #[derive(Debug, Serialize)]
 struct CreateOrderRequest {
-    amount: i64,      // Amount in paise (INR * 100)
+    amount: i64,      
     currency: String,
     receipt: String,
     notes: serde_json::Value,
@@ -42,7 +41,6 @@ impl PaymentService {
         Self { config, http_client }
     }
 
-    /// Create a Razorpay order for Pro subscription.
     #[instrument(skip(self), fields(amount_inr = amount_inr))]
     pub async fn create_order(
         &self,
@@ -51,7 +49,7 @@ impl PaymentService {
         user_email: &str,
     ) -> AppResult<RazorpayOrderResponse> {
         let request = CreateOrderRequest {
-            amount: amount_inr * 100, // Convert to paise
+            amount: amount_inr * 100, 
             currency: "INR".to_string(),
             receipt: receipt.to_string(),
             notes: serde_json::json!({
@@ -86,8 +84,6 @@ impl PaymentService {
         Ok(order)
     }
 
-    /// Verify Razorpay payment signature.
-    /// Signature = HMAC-SHA256(order_id|payment_id, key_secret)
     pub fn verify_payment_signature(
         &self,
         order_id: &str,
@@ -105,7 +101,6 @@ impl PaymentService {
         Ok(expected == signature)
     }
 
-    /// Verify Razorpay webhook signature.
     pub fn verify_webhook_signature(
         &self,
         body: &str,
@@ -120,7 +115,6 @@ impl PaymentService {
         Ok(expected == signature)
     }
 
-    /// Get Razorpay key ID for client-side initialization.
     pub fn get_key_id(&self) -> &str {
         &self.config.razorpay.key_id
     }

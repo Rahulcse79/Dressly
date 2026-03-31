@@ -4,7 +4,6 @@ use sqlx::FromRow;
 use uuid::Uuid;
 use validator::Validate;
 
-/// AI outfit generation record.
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct OutfitGeneration {
     pub id: Uuid,
@@ -23,7 +22,6 @@ pub struct OutfitGeneration {
     pub created_at: DateTime<Utc>,
 }
 
-/// Generation status.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(type_name = "generation_status", rename_all = "lowercase")]
 pub enum GenerationStatus {
@@ -33,17 +31,14 @@ pub enum GenerationStatus {
     Failed,
 }
 
-/// Request to generate an outfit.
 #[derive(Debug, Deserialize, Validate)]
 pub struct GenerateOutfitRequest {
     #[validate(length(min = 10, max = 1000, message = "Prompt must be 10-1000 characters"))]
     pub prompt: String,
     pub occasion: Option<String>,
-    /// Base64-encoded images or image URLs from wardrobe
     pub image_ids: Option<Vec<Uuid>>,
 }
 
-/// Dress code analysis request.
 #[derive(Debug, Deserialize, Validate)]
 pub struct AnalyzeDressCodeRequest {
     #[validate(length(min = 3, max = 500))]
@@ -51,7 +46,6 @@ pub struct AnalyzeDressCodeRequest {
     pub occasion: Option<String>,
 }
 
-/// AI quota response.
 #[derive(Debug, Serialize)]
 pub struct AiQuotaResponse {
     pub used_today: i32,
@@ -61,7 +55,6 @@ pub struct AiQuotaResponse {
     pub resets_at: DateTime<Utc>,
 }
 
-/// Generation progress update (sent via WebSocket).
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct GenerationProgress {
     pub generation_id: Uuid,
@@ -70,7 +63,6 @@ pub struct GenerationProgress {
     pub message: Option<String>,
 }
 
-/// Gemini API request payload.
 #[derive(Debug, Serialize)]
 pub struct GeminiRequest {
     pub contents: Vec<GeminiContent>,
@@ -111,7 +103,6 @@ pub struct GeminiGenerationConfig {
     pub max_output_tokens: u32,
 }
 
-/// Gemini API response.
 #[derive(Debug, Deserialize)]
 pub struct GeminiResponse {
     pub candidates: Option<Vec<GeminiCandidate>>,
