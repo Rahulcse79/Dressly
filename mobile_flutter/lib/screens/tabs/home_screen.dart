@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Home Screen (Dashboard) — Flutter
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,8 +7,6 @@ import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/api_service.dart';
 import '../../widgets/widgets.dart';
-
-// ── Providers for data fetching ─────────────────────────────
 
 final aiQuotaProvider = FutureProvider<AiQuota?>((ref) async {
   try {
@@ -62,7 +56,6 @@ class HomeScreen extends ConsumerWidget {
         children: [
           const SizedBox(height: Spacing.md),
 
-          // ── Header ────────────────────────────────────────
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -111,7 +104,6 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: Spacing.xl),
 
-          // ── Quick Actions ─────────────────────────────────
           Row(
             children: [
               Expanded(
@@ -185,7 +177,6 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: Spacing.xl),
 
-          // ── AI Quota Card ─────────────────────────────────
           quotaAsync.when(
             data: (quota) {
               if (quota == null) return const SizedBox.shrink();
@@ -263,7 +254,6 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: Spacing.xl),
 
-          // ── Recent Generations ─────────────────────────────
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

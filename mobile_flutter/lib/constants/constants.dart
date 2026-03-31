@@ -1,11 +1,5 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — App Constants (Dart)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-// ── API Configuration ───────────────────────────────────────
 
 const String apiBaseUrl = kDebugMode
     ? 'http://192.168.0.106:8080/v1'
@@ -15,59 +9,40 @@ const String wsBaseUrl = kDebugMode
     ? 'ws://192.168.0.106:8080/ws'
     : 'wss://api.dressly.app/ws';
 
-// ── API Endpoints ───────────────────────────────────────────
-
 class Endpoints {
   Endpoints._();
 
-  // Auth
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String refresh = '/auth/refresh';
   static const String logout = '/auth/logout';
-
-  // User
   static const String me = '/users/me';
   static const String updateMe = '/users/me';
   static const String deleteMe = '/users/me';
   static const String uploadAvatar = '/users/me/avatar';
-
-  // Wardrobe
   static const String wardrobeList = '/wardrobe';
   static const String wardrobeAdd = '/wardrobe';
   static String wardrobeItem(String id) => '/wardrobe/$id';
-
-  // AI
   static const String aiGenerate = '/ai/generate';
   static const String aiList = '/ai/generations';
   static String aiDetail(String id) => '/ai/generations/$id';
   static const String aiQuota = '/ai/quota';
-
-  // Subscription
   static const String subscription = '/subscription';
   static const String subscriptionCheckout = '/subscription/checkout';
   static const String subscriptionVerify = '/subscription/verify';
   static const String subscriptionCancel = '/subscription/cancel';
-
-  // Notifications
   static const String notifications = '/notifications';
   static String notificationRead(String id) => '/notifications/$id/read';
   static const String registerFcm = '/notifications/token';
   static const String notificationsUnread = '/notifications/unread-count';
-
-  // Admin
   static const String adminUsers = '/admin/users';
   static String adminUser(String id) => '/admin/users/$id';
   static const String adminConfig = '/admin/config';
   static const String adminAnalytics = '/admin/analytics';
   static const String adminSubscriptions = '/admin/subscriptions';
-
-  // Health
   static const String health = '/health';
   static const String readiness = '/health/ready';
 }
-
-// ── Storage Keys ────────────────────────────────────────────
 
 class StorageKeys {
   StorageKeys._();
@@ -80,8 +55,6 @@ class StorageKeys {
   static const String fcmToken = 'dressly.fcm-token';
   static const String deviceId = 'dressly.device-id';
 }
-
-// ── Theme Colors ────────────────────────────────────────────
 
 class AppColors {
   final Color background;
@@ -183,8 +156,6 @@ const darkColors = AppColors(
   tabBarBackground: Color(0xFF0F0F0F),
 );
 
-// ── Typography ──────────────────────────────────────────────
-
 class FontSizes {
   FontSizes._();
 
@@ -199,8 +170,6 @@ class FontSizes {
   static const double xxxxl = 36;
   static const double xxxxxl = 48;
 }
-
-// ── Spacing ─────────────────────────────────────────────────
 
 class Spacing {
   Spacing._();
@@ -227,8 +196,6 @@ class AppRadius {
   static const double full = 9999;
 }
 
-// ── Animation Durations (ms) ────────────────────────────────
-
 class AppAnimation {
   AppAnimation._();
 
@@ -236,8 +203,6 @@ class AppAnimation {
   static const Duration normal = Duration(milliseconds: 250);
   static const Duration slow = Duration(milliseconds: 400);
 }
-
-// ── App Limits ──────────────────────────────────────────────
 
 class Limits {
   Limits._();
@@ -251,8 +216,6 @@ class Limits {
   static const int displayNameMaxLength = 50;
   static const int maxOccasionTags = 10;
 }
-
-// ── Clothing Categories Config ──────────────────────────────
 
 class CategoryInfo {
   final String label;
@@ -289,8 +252,6 @@ final Map<String, CategoryInfo> categoryConfig = {
       label: 'Other', icon: Icons.more_horiz, color: Color(0xFF6B7280)),
 };
 
-// ── Occasions ───────────────────────────────────────────────
-
 const List<String> occasions = [
   'casual',
   'formal',
@@ -307,8 +268,6 @@ const List<String> occasions = [
   'brunch',
   'evening',
 ];
-
-// ── Seasons ─────────────────────────────────────────────────
 
 class SeasonInfo {
   final String key;
@@ -329,8 +288,6 @@ const List<SeasonInfo> seasons = [
   SeasonInfo(key: 'winter', label: 'Winter', icon: '❄️'),
   SeasonInfo(key: 'allseason', label: 'All Season', icon: '🔄'),
 ];
-
-// ── WebSocket Config ────────────────────────────────────────
 
 class WsConfig {
   WsConfig._();

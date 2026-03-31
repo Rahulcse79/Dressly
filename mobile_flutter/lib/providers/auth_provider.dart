@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Auth Provider (Riverpod + SecureStorage)
-// ══════════════════════════════════════════════════════════════
-
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,7 +50,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier() : super(const AuthState());
 
-  // ── Initialize from stored tokens ────────────────────
   Future<void> initialize() async {
     try {
       final token =
@@ -70,7 +65,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
           isAuthenticated: true,
           isInitialized: true,
         );
-        // Silently refresh user data
         refreshUser();
       } else {
         state = state.copyWith(isInitialized: true);
@@ -80,7 +74,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // ── Register ─────────────────────────────────────────
   Future<void> register(RegisterRequest data) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -117,7 +110,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // ── Login ────────────────────────────────────────────
   Future<void> login(LoginRequest data) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -154,7 +146,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // ── Logout ───────────────────────────────────────────
   Future<void> logout() async {
     try {
       await _api.post(Endpoints.logout).catchError((_) {});
@@ -172,7 +163,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // ── Refresh User Data ────────────────────────────────
   Future<void> refreshUser() async {
     try {
       final response = await _api.get(Endpoints.me);
@@ -182,8 +172,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           key: StorageKeys.user,
           value: jsonEncode(user.toJson()));
       state = state.copyWith(user: user);
-    } catch (_) {
-      // Silent fail
+    } catch (_) {         
     }
   }
 

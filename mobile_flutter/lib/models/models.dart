@@ -1,9 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Core Data Models (Dart)
-// ══════════════════════════════════════════════════════════════
-
-// ── User Types ──────────────────────────────────────────────
-
 enum UserRole { user, pro, admin }
 
 class User {
@@ -74,7 +68,6 @@ class User {
         'subscription_tier': subscriptionTier,
       };
 
-  // Convenience getter used in UI
   String get name => displayName ?? (email.split('@').first);
 }
 
@@ -101,8 +94,6 @@ class TokenResponse {
         user: User.fromJson(json['user'] as Map<String, dynamic>),
       );
 }
-
-// ── Auth Types ──────────────────────────────────────────────
 
 class RegisterRequest {
   final String email;
@@ -145,8 +136,6 @@ class LoginRequest {
         if (platform != null) 'platform': platform,
       };
 }
-
-// ── Wardrobe Types ──────────────────────────────────────────
 
 enum ClothingCategory {
   top,
@@ -213,8 +202,6 @@ class WardrobeItem {
         updatedAt: json['updated_at'] as String,
       );
 }
-
-// ── AI Generation Types ─────────────────────────────────────
 
 enum GenerationStatus { pending, processing, completed, failed }
 
@@ -296,10 +283,7 @@ class AiQuota {
       );
 }
 
-// ── Subscription Types ──────────────────────────────────────
-
 enum PlanType { free, pro }
-
 enum SubscriptionStatus { active, cancelled, expired, pending }
 
 class Subscription {
@@ -363,8 +347,6 @@ class SubscriptionResponse {
       );
 }
 
-// ── Notification Types ──────────────────────────────────────
-
 enum NotificationType {
   aiGenerationComplete,
   subscriptionActivated,
@@ -373,7 +355,6 @@ enum NotificationType {
   styleTip,
   paymentSuccess,
   paymentFailed,
-  // Aliases used by UI
   outfitReady,
   styleAlert,
   subscriptionUpdate,
@@ -444,7 +425,6 @@ class AppNotification {
         createdAt: createdAt,
       );
 
-  // Convenience getters used by UI
   bool get read => isRead;
   DateTime get createdAtDate => DateTime.tryParse(createdAt) ?? DateTime.now();
 
@@ -462,14 +442,11 @@ class AppNotification {
       );
 }
 
-// ── Admin Types ─────────────────────────────────────────────
-
 class AdminConfig {
   final String key;
   final dynamic value;
   final String updatedAt;
   final String? updatedBy;
-  // Parsed convenience getters (when value is a map)
   int? get maxDailyGenerations {
     if (value is Map && value['max_daily_generations'] != null) {
       return (value['max_daily_generations'] as num).toInt();
@@ -543,11 +520,8 @@ class AdminAnalytics {
         wsConnections: json['ws_connections'] as int,
       );
 
-  // Backwards-compatible accessor expected by UI
   double get totalRevenue => totalRevenueInr;
 }
-
-// ── API Response Types ──────────────────────────────────────
 
 class ApiResponse<T> {
   final bool success;
@@ -576,7 +550,5 @@ class PaginatedResponse<T> {
     required this.totalPages,
   });
 }
-
-// ── Theme Types ─────────────────────────────────────────────
 
 enum ThemeMode { light, dark, system }

@@ -1,11 +1,6 @@
-# ══════════════════════════════════════════════════════════════
-# Dressly — Docker Compose (Development)
-# ══════════════════════════════════════════════════════════════
-
 version: "3.9"
 
 services:
-  # ── PostgreSQL ────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: dressly-postgres
@@ -24,7 +19,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Redis ─────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: dressly-redis
@@ -44,8 +38,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # ── Backend API ───────────────────────────────────────────
   backend:
     build:
       context: ./backend
@@ -60,53 +52,43 @@ services:
       redis:
         condition: service_healthy
     environment:
-      # Server
+
       SERVER_HOST: "0.0.0.0"
       SERVER_PORT: "8080"
       RUST_LOG: "info,dressly_backend=debug"
       
-      # Database
       DATABASE_URL: "postgres://dressly_user:dressly_secret_dev@postgres:5432/dressly"
       DATABASE_MAX_CONNECTIONS: "20"
       DATABASE_MIN_CONNECTIONS: "5"
       
-      # Redis
       REDIS_URL: "redis://redis:6379"
       REDIS_MAX_CONNECTIONS: "20"
       
-      # JWT
       JWT_ACCESS_SECRET: "dev-access-secret-change-in-production-min-32-chars!!"
       JWT_REFRESH_SECRET: "dev-refresh-secret-change-in-production-min-32-chars!"
       JWT_ACCESS_EXPIRY_SECS: "900"
       JWT_REFRESH_EXPIRY_SECS: "604800"
       
-      # AI (set your key)
       GEMINI_API_KEY: "${GEMINI_API_KEY}"
       GEMINI_MODEL: "gemini-2.0-flash"
       GEMINI_MAX_TOKENS: "2048"
       
-      # Payments (set your keys)
       RAZORPAY_KEY_ID: "${RAZORPAY_KEY_ID}"
       RAZORPAY_KEY_SECRET: "${RAZORPAY_KEY_SECRET}"
       RAZORPAY_WEBHOOK_SECRET: "${RAZORPAY_WEBHOOK_SECRET}"
       
-      # FCM
       FCM_SERVER_KEY: "${FCM_SERVER_KEY}"
       
-      # Storage
       STORAGE_ENDPOINT: "https://storage.googleapis.com"
       STORAGE_BUCKET: "dressly-uploads"
       STORAGE_REGION: "asia-south1"
       
-      # Rate Limiting
       RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
       RATE_LIMIT_BURST: "10"
       
-      # WebSocket
       WS_HEARTBEAT_INTERVAL: "10"
       WS_CLIENT_TIMEOUT: "30"
       
-      # App
       FREE_DAILY_GENERATIONS: "5"
       PRO_DAILY_GENERATIONS: "100"
       PRO_PRICE_INR: "499"
@@ -117,7 +99,6 @@ services:
       start_period: 30s
       retries: 3
 
-  # ── pgBouncer ─────────────────────────────────────────────
   pgbouncer:
     image: edoburu/pgbouncer:1.22.0
     container_name: dressly-pgbouncer
@@ -134,7 +115,6 @@ services:
       DEFAULT_POOL_SIZE: 25
       MIN_POOL_SIZE: 5
 
-  # ── Prometheus ────────────────────────────────────────────
   prometheus:
     image: prom/prometheus:v2.51.0
     container_name: dressly-prometheus
@@ -148,7 +128,6 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.retention.time=15d'
 
-  # ── Grafana ───────────────────────────────────────────────
   grafana:
     image: grafana/grafana:10.4.0
     container_name: dressly-grafana

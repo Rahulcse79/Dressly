@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Notifications Screen (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/constants.dart';
@@ -86,7 +82,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         children: [
           const SizedBox(height: Spacing.md),
 
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -119,7 +114,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           ),
           const SizedBox(height: Spacing.base),
 
-          // List
           Expanded(
             child: state.isLoading && state.notifications.isEmpty
                 ? const DresslyLoading(message: 'Loading notifications…')
@@ -211,7 +205,6 @@ class _NotificationTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon
             Container(
               width: 44,
               height: 44,
@@ -223,7 +216,6 @@ class _NotificationTile extends StatelessWidget {
             ),
             const SizedBox(width: Spacing.md),
 
-            // Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

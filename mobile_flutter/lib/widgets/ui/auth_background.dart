@@ -1,12 +1,6 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Auth Background (Dark Fashion Gradient)
-// ══════════════════════════════════════════════════════════════
-
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// A luxurious dark background with warm bokeh-style light orbs
-/// used across all auth screens (login, register, forgot password).
 class AuthBackground extends StatelessWidget {
   final Widget child;
 
@@ -14,8 +8,6 @@ class AuthBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use MediaQuery.sizeOf to avoid full widget tree rebuilds
-    // when keyboard opens/closes.
     final size = MediaQuery.sizeOf(context);
 
     return Container(
@@ -36,7 +28,6 @@ class AuthBackground extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Warm light orb — top left
           Positioned(
             top: size.height * 0.02,
             left: size.width * 0.1,
@@ -46,7 +37,6 @@ class AuthBackground extends StatelessWidget {
               opacity: 0.12,
             ),
           ),
-          // Warm light orb — top center-right
           Positioned(
             top: size.height * 0.06,
             right: size.width * 0.15,
@@ -56,7 +46,6 @@ class AuthBackground extends StatelessWidget {
               opacity: 0.09,
             ),
           ),
-          // Warm light orb — top right
           Positioned(
             top: -20,
             right: -30,
@@ -66,7 +55,6 @@ class AuthBackground extends StatelessWidget {
               opacity: 0.08,
             ),
           ),
-          // Small warm accent — center left
           Positioned(
             top: size.height * 0.18,
             left: size.width * 0.3,
@@ -76,7 +64,6 @@ class AuthBackground extends StatelessWidget {
               opacity: 0.15,
             ),
           ),
-          // Subtle red accent — mid area
           Positioned(
             top: size.height * 0.25,
             right: size.width * 0.2,
@@ -86,7 +73,6 @@ class AuthBackground extends StatelessWidget {
               opacity: 0.05,
             ),
           ),
-          // Very subtle bottom glow
           Positioned(
             bottom: size.height * 0.15,
             left: size.width * 0.4,
@@ -96,7 +82,6 @@ class AuthBackground extends StatelessWidget {
               opacity: 0.04,
             ),
           ),
-          // Dark overlay for readability
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -113,7 +98,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-          // Actual content
           child,
         ],
       ),

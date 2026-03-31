@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — WebSocket Service with Auto-Reconnect (Dart)
-// ══════════════════════════════════════════════════════════════
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -32,7 +28,6 @@ class WebSocketService {
 
   bool get isConnected => _channel != null;
 
-  // ── Connect ─────────────────────────────────────────────
   Future<void> connect() async {
     if (_channel != null) return;
 
@@ -96,7 +91,6 @@ class WebSocketService {
     }
   }
 
-  // ── Reconnect with Exponential Backoff + Jitter ─────────
   void _scheduleReconnect() {
     if (_reconnectAttempts >= WsConfig.reconnectMaxAttempts) {
       debugPrint('[WS] Max reconnect attempts reached');
@@ -121,7 +115,6 @@ class WebSocketService {
     });
   }
 
-  // ── Heartbeat ───────────────────────────────────────────
   void _startHeartbeat() {
     _stopHeartbeat();
     _heartbeatTimer = Timer.periodic(
@@ -135,7 +128,6 @@ class WebSocketService {
     _heartbeatTimer = null;
   }
 
-  // ── Send ────────────────────────────────────────────────
   bool send(Map<String, dynamic> data) {
     if (_channel != null) {
       _channel!.sink.add(jsonEncode(data));
@@ -144,7 +136,6 @@ class WebSocketService {
     return false;
   }
 
-  // ── Disconnect ──────────────────────────────────────────
   void disconnect() {
     _isIntentionalClose = true;
     _reconnectTimer?.cancel();
@@ -156,7 +147,6 @@ class WebSocketService {
     _reconnectAttempts = 0;
   }
 
-  // ── Event Handlers ──────────────────────────────────────
   VoidCallback onMessage(MessageHandler handler) {
     _messageHandlers.add(handler);
     return () => _messageHandlers.remove(handler);

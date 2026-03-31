@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — App Entry Point (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +12,6 @@ import 'services/websocket_service.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -42,10 +37,7 @@ class _DresslyAppState extends ConsumerState<DresslyApp>
   }
 
   Future<void> _init() async {
-    // Initialize theme
     await ref.read(themeProvider.notifier).initialize();
-
-    // Initialize auth (load tokens, fetch user)
     await ref.read(authProvider.notifier).initialize();
   }
 
@@ -58,7 +50,6 @@ class _DresslyAppState extends ConsumerState<DresslyApp>
 
   @override
   void didChangePlatformBrightness() {
-    // Respond to system theme changes
     ref.read(themeProvider.notifier).onSystemBrightnessChanged();
   }
 
@@ -69,17 +60,14 @@ class _DresslyAppState extends ConsumerState<DresslyApp>
     final router = ref.watch(routerProvider);
     final colors = themeState.colors;
 
-    // Connect WebSocket when authenticated
     if (authState.isAuthenticated) {
       _connectWebSocket();
     }
 
-    // Determine brightness
     final isDark = themeState.mode == models.ThemeMode.dark ||
         (themeState.mode == models.ThemeMode.system &&
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
-    // Status bar styling
     SystemChrome.setSystemUIOverlayStyle(
       isDark
           ? SystemUiOverlayStyle.light.copyWith(
@@ -113,7 +101,6 @@ class _DresslyAppState extends ConsumerState<DresslyApp>
         ),
       ),
       builder: (context, child) {
-        // Show splash/loading while initializing
         if (!authState.isInitialized) {
           return _SplashScreen(colors: colors);
         }
@@ -126,7 +113,6 @@ class _DresslyAppState extends ConsumerState<DresslyApp>
     if (!wsService.isConnected) {
       wsService.connect();
       wsService.onMessage((data) {
-        // Handle incoming WebSocket messages (notifications)
         if (data is Map<String, dynamic>) {
           final type = data['type'] as String?;
           if (type == 'notification') {
@@ -139,8 +125,6 @@ class _DresslyAppState extends ConsumerState<DresslyApp>
     }
   }
 }
-
-// ── Splash Screen ───────────────────────────────────────────
 
 class _SplashScreen extends StatelessWidget {
   final AppColors colors;
@@ -155,7 +139,6 @@ class _SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo text
             const Text(
               'DRESSLY',
               style: TextStyle(

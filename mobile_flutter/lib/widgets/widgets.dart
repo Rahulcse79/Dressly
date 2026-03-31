@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Widget Exports
-// ══════════════════════════════════════════════════════════════
-
 export 'ui/auth_background.dart';
 export 'ui/button.dart';
 export 'ui/card.dart';

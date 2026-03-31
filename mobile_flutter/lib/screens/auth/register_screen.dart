@@ -1,8 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Register Screen (Flutter)
-// Dark luxury fashion aesthetic
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -158,7 +153,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         SizedBox(
                             height: MediaQuery.sizeOf(context).height * 0.05),
 
-                        // ── Back Button ──
                         GestureDetector(
                           onTap: () => context.pop(),
                           child: Container(
@@ -181,7 +175,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                         const SizedBox(height: 24),
 
-                        // ── DRESSLY Logo ──
                         const Text(
                           'DRESSLY',
                           style: TextStyle(
@@ -205,7 +198,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         ),
                         const SizedBox(height: 32),
 
-                        // ── Name Field ──
                         const Text(
                           'Display Name',
                           style: TextStyle(
@@ -224,7 +216,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         ),
                         const SizedBox(height: 16),
 
-                        // ── Email Field ──
                         const Text(
                           'Email',
                           style: TextStyle(
@@ -247,7 +238,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         ),
                         const SizedBox(height: 16),
 
-                        // ── Password Field ──
                         const Text(
                           'Password',
                           style: TextStyle(
@@ -271,7 +261,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         ),
                         const SizedBox(height: 16),
 
-                        // ── Confirm Password Field ──
                         const Text(
                           'Confirm Password',
                           style: TextStyle(
@@ -294,7 +283,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                           onSubmitted: _handleRegister,
                         ),
 
-                        // ── Password Mismatch Error ──
                         if (_confirmController.text.isNotEmpty &&
                             _passwordController.text !=
                                 _confirmController.text)
@@ -317,7 +305,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                           ),
 
-                        // ── Error Message ──
                         if (authState.error != null)
                           Container(
                             margin: const EdgeInsets.only(top: 16),
@@ -351,7 +338,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                         const SizedBox(height: 28),
 
-                        // ── Create Account Button ──
                         SizedBox(
                           width: double.infinity,
                           height: 56,
@@ -392,7 +378,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                         const SizedBox(height: 24),
 
-                        // ── Sign In Link ──
                         Center(
                           child: GestureDetector(
                             onTap: () => context.push('/auth/login'),
@@ -431,8 +416,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
       ),
     );
   }
-
-  // ── Glassmorphism Input Field ──────────────────────────────
 
   Widget _buildGlassInput({
     required TextEditingController controller,

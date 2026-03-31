@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Admin Screen (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/constants.dart';
@@ -9,8 +5,6 @@ import '../../models/models.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/api_service.dart';
 import '../../widgets/widgets.dart';
-
-// ── Providers ───────────────────────────────────────────────
 
 final adminAnalyticsProvider =
     FutureProvider.autoDispose<AdminAnalytics?>((ref) async {
@@ -44,7 +38,6 @@ class AdminScreen extends ConsumerStatefulWidget {
 class _AdminScreenState extends ConsumerState<AdminScreen> {
   bool _isSavingConfig = false;
 
-  // Inline edit state
   String? _editingField;
   final _editController = TextEditingController();
 
@@ -126,7 +119,6 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Analytics ─────────────────────────────────
               Text(
                 'Analytics',
                 style: TextStyle(
@@ -195,7 +187,6 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
 
               const SizedBox(height: Spacing.xl),
 
-              // ── Configuration ──────────────────────────────
               Text(
                 'Configuration',
                 style: TextStyle(
@@ -339,8 +330,6 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
     }).toList();
   }
 }
-
-// ── Stat Card ───────────────────────────────────────────────
 
 class _StatCard extends StatelessWidget {
   final String label;

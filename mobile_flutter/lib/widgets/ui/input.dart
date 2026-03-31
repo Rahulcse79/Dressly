@@ -1,8 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Input Widget (Flutter)
-// Glassmorphism dark style with focus animations
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/constants.dart';
@@ -85,7 +80,6 @@ class _DresslyInputState extends ConsumerState<DresslyInput> {
     final isDark = ref.watch(themeProvider).isDark;
     final hasError = widget.error != null && widget.error!.isNotEmpty;
 
-    // Use glassmorphism style for dark mode, standard style for light
     final bgColor = isDark
         ? Colors.white.withOpacity(_isFocused ? 0.10 : 0.07)
         : (_isFocused ? colors.primary.withOpacity(0.04) : colors.surface);

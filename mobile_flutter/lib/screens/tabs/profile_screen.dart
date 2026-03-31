@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Profile Screen (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +24,6 @@ class ProfileScreen extends ConsumerWidget {
         children: [
           const SizedBox(height: Spacing.lg),
 
-          // Avatar + Name
           CircleAvatar(
             radius: 48,
             backgroundColor: colors.primary.withOpacity(0.12),
@@ -64,7 +59,6 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
 
-          // Subscription badge
           if (user?.subscriptionTier != null &&
               user!.subscriptionTier != 'free') ...[
             const SizedBox(height: Spacing.sm),
@@ -94,7 +88,6 @@ class ProfileScreen extends ConsumerWidget {
           ],
           const SizedBox(height: Spacing.xxl),
 
-          // Settings section
           _SectionHeader(title: 'Settings', colors: colors),
           _MenuRow(
             icon: Icons.palette,
@@ -118,7 +111,6 @@ class ProfileScreen extends ConsumerWidget {
 
           const SizedBox(height: Spacing.lg),
 
-          // Account section
           _SectionHeader(title: 'Account', colors: colors),
           if (user?.role == models.UserRole.admin)
             _MenuRow(
@@ -142,7 +134,6 @@ class ProfileScreen extends ConsumerWidget {
 
           const SizedBox(height: Spacing.lg),
 
-          // Logout
           DresslyButton(
             title: 'Sign Out',
             onPressed: () async {
@@ -155,7 +146,6 @@ class ProfileScreen extends ConsumerWidget {
 
           const SizedBox(height: Spacing.md),
 
-          // Delete account
           DresslyButton(
             title: 'Delete Account',
             onPressed: () => _confirmDelete(context, ref),
@@ -274,8 +264,6 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-// ── Section Header ──────────────────────────────────────────
-
 class _SectionHeader extends StatelessWidget {
   final String title;
   final AppColors colors;
@@ -301,8 +289,6 @@ class _SectionHeader extends StatelessWidget {
     );
   }
 }
-
-// ── Menu Row ────────────────────────────────────────────────
 
 class _MenuRow extends StatelessWidget {
   final IconData icon;

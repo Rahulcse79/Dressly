@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Modal Widget (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/constants.dart';
@@ -51,7 +47,6 @@ Future<T?> showDresslyModal<T>({
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header
           if (title != null || showCloseButton)
             Container(
               padding: const EdgeInsets.only(
@@ -94,7 +89,6 @@ Future<T?> showDresslyModal<T>({
                 ],
               ),
             ),
-          // Body
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(Spacing.lg),

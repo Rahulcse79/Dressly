@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — API Service (Dio with JWT Interceptors)
-// ══════════════════════════════════════════════════════════════
-
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -33,7 +29,6 @@ class ApiService {
       ),
     );
 
-    // Request interceptor: attach JWT
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -44,7 +39,6 @@ class ApiService {
               options.headers['Authorization'] = 'Bearer $token';
             }
           } catch (_) {
-            // SecureStorage may fail on first launch
           }
           handler.next(options);
         },
@@ -120,7 +114,6 @@ class ApiService {
       }
       _refreshQueue.clear();
 
-      // Clear tokens on refresh failure
       await _secureStorage.delete(key: StorageKeys.accessToken);
       await _secureStorage.delete(key: StorageKeys.refreshToken);
       await _secureStorage.delete(key: StorageKeys.user);
@@ -130,8 +123,6 @@ class ApiService {
       _isRefreshing = false;
     }
   }
-
-  // ── Convenience methods ─────────────────────────────────
 
   Future<Response<T>> get<T>(
     String path, {
@@ -159,8 +150,6 @@ class ApiService {
 
   Future<Response<T>> delete<T>(String path) => _dio.delete<T>(path);
 
-  // ── Multipart Upload Helper ─────────────────────────────
-
   Future<Response> uploadFile(
     String url,
     FormData formData,
@@ -176,12 +165,9 @@ class ApiService {
       );
 }
 
-// ── Error Extractor ─────────────────────────────────────────
-
 class ApiErrorInfo {
   final String code;
   final String message;
-
   const ApiErrorInfo({required this.code, required this.message});
 }
 

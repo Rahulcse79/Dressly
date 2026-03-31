@@ -1,8 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Forgot Password Screen (Flutter)
-// Dark luxury fashion aesthetic
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +59,6 @@ class _ForgotPasswordScreenState
 
     setState(() => _isLoading = true);
     try {
-      // TODO: Call password reset API
       await Future.delayed(const Duration(milliseconds: 1500));
       if (mounted) {
         setState(() => _isSent = true);
@@ -133,7 +127,6 @@ class _ForgotPasswordScreenState
                         SizedBox(
                             height: MediaQuery.sizeOf(context).height * 0.05),
 
-                        // ── Back Button ──
                         GestureDetector(
                           onTap: () => context.pop(),
                           child: Container(
@@ -156,7 +149,6 @@ class _ForgotPasswordScreenState
 
                         const SizedBox(height: 24),
 
-                        // ── DRESSLY Logo ──
                         const Text(
                           'DRESSLY',
                           style: TextStyle(
@@ -169,7 +161,6 @@ class _ForgotPasswordScreenState
                         ),
                         const SizedBox(height: 8),
 
-                        // ── Title ──
                         Text(
                           _isSent ? 'CHECK YOUR\nEMAIL' : 'RESET YOUR\nPASSWORD',
                           style: const TextStyle(
@@ -182,7 +173,6 @@ class _ForgotPasswordScreenState
                         ),
                         const SizedBox(height: 12),
 
-                        // ── Subtitle ──
                         Text(
                           _isSent
                               ? "We've sent a password reset link to\n${_emailController.text}"
@@ -196,7 +186,6 @@ class _ForgotPasswordScreenState
                         const SizedBox(height: 36),
 
                         if (_isSent) ...[
-                          // ── Success State ──
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
@@ -229,7 +218,6 @@ class _ForgotPasswordScreenState
 
                           const SizedBox(height: 28),
 
-                          // ── Back to Login Button ──
                           SizedBox(
                             width: double.infinity,
                             height: 56,
@@ -258,7 +246,6 @@ class _ForgotPasswordScreenState
 
                           const SizedBox(height: 20),
 
-                          // ── Resend Link ──
                           Center(
                             child: GestureDetector(
                               onTap: () {
@@ -278,7 +265,6 @@ class _ForgotPasswordScreenState
                             ),
                           ),
                         ] else ...[
-                          // ── Email Field ──
                           const Text(
                             'Email Address',
                             style: TextStyle(
@@ -327,7 +313,6 @@ class _ForgotPasswordScreenState
 
                           const SizedBox(height: 28),
 
-                          // ── Send Reset Link Button ──
                           SizedBox(
                             width: double.infinity,
                             height: 56,
@@ -369,7 +354,6 @@ class _ForgotPasswordScreenState
 
                         const SizedBox(height: 28),
 
-                        // ── Back to Login Link ──
                         Center(
                           child: GestureDetector(
                             onTap: () => context.pop(),

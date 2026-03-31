@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Wardrobe Screen (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,8 +6,6 @@ import '../../models/models.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/api_service.dart';
 import '../../widgets/widgets.dart';
-
-// ── Wardrobe data provider ──────────────────────────────────
 
 final wardrobeProvider =
     FutureProvider.autoDispose<List<WardrobeItem>>((ref) async {
@@ -78,7 +72,6 @@ class _WardrobeScreenState extends ConsumerState<WardrobeScreen> {
     );
     if (image == null) return;
 
-    // TODO: Upload image and create wardrobe item via API
     ref.invalidate(wardrobeProvider);
   }
 
@@ -95,7 +88,6 @@ class _WardrobeScreenState extends ConsumerState<WardrobeScreen> {
         children: [
           const SizedBox(height: Spacing.md),
 
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -124,7 +116,6 @@ class _WardrobeScreenState extends ConsumerState<WardrobeScreen> {
           ),
           const SizedBox(height: Spacing.base),
 
-          // Category filters
           SizedBox(
             height: 40,
             child: ListView.separated(
@@ -169,7 +160,6 @@ class _WardrobeScreenState extends ConsumerState<WardrobeScreen> {
           ),
           const SizedBox(height: Spacing.base),
 
-          // Items grid
           Expanded(
             child: itemsAsync.when(
               data: (items) {

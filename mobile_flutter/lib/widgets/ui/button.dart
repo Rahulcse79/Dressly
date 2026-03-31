@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Button Widget (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/constants.dart';
@@ -40,7 +36,6 @@ class DresslyButton extends ConsumerWidget {
     final colors = ref.watch(themeProvider).colors;
     final isDisabled = disabled || loading;
 
-    // Size
     double hPad, vPad, fontSize, borderRadius;
     switch (size) {
       case ButtonSize.sm:
@@ -60,7 +55,6 @@ class DresslyButton extends ConsumerWidget {
         borderRadius = AppRadius.md;
     }
 
-    // Variant colors
     Color bgColor, textColor;
     Color? borderColor;
     List<Color>? gradientColors;

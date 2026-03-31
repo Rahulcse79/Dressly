@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — AI Generate Screen (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -104,7 +100,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
         children: [
           const SizedBox(height: Spacing.md),
 
-          // Header
           Text(
             'AI Style Generator ✨',
             style: TextStyle(
@@ -131,7 +126,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
           ),
           const SizedBox(height: Spacing.lg),
 
-          // Prompt
           DresslyInput(
             label: 'Describe your ideal outfit',
             placeholder: 'e.g., Smart casual for a summer dinner date',
@@ -140,7 +134,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
             maxLines: 3,
           ),
 
-          // Occasion selector
           Text(
             'Occasion (optional)',
             style: TextStyle(
@@ -192,7 +185,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
           ),
           const SizedBox(height: Spacing.lg),
 
-          // Reference photos
           Text(
             'Reference Photos (optional)',
             style: TextStyle(
@@ -265,8 +257,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
                         border: Border.all(
                           color: colors.border,
                           width: 1.5,
-                          // Dashed border is not native in Flutter,
-                          // using solid border instead
                         ),
                       ),
                       child: Column(
@@ -291,7 +281,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
           ),
           const SizedBox(height: Spacing.xl),
 
-          // Generate button
           DresslyButton(
             title: _isGenerating ? 'Generating...' : '🪄 Generate Outfit',
             onPressed: _handleGenerate,
@@ -301,7 +290,6 @@ class _GenerateScreenState extends ConsumerState<GenerateScreen> {
             disabled: _promptController.text.trim().isEmpty || _isGenerating,
           ),
 
-          // Result
           if (_result != null) ...[
             const SizedBox(height: Spacing.xl),
             DresslyCard(

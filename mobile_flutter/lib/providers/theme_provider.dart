@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Theme Provider (Light / Dark / System)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +64,6 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
         );
       }
     } catch (_) {
-      // Use default
     }
   }
 

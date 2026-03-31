@@ -1,8 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — Login Screen (Flutter)
-// Dark luxury fashion aesthetic
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -133,7 +128,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         SizedBox(
                             height: MediaQuery.sizeOf(context).height * 0.08),
 
-                        // ── DRESSLY Logo ──
                         const Text(
                           'DRESSLY',
                           style: TextStyle(
@@ -146,7 +140,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                         const SizedBox(height: 12),
 
-                        // ── Tagline ──
                         const Text(
                           'CUSTOMIZE\nYOUR CLOSET',
                           style: TextStyle(
@@ -159,7 +152,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                         const SizedBox(height: 40),
 
-                        // ── Email Field ──
                         const Text(
                           'Email',
                           style: TextStyle(
@@ -181,7 +173,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                         const SizedBox(height: 20),
 
-                        // ── Password Field ──
                         const Text(
                           'Password',
                           style: TextStyle(
@@ -203,7 +194,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               ref.read(authProvider.notifier).clearError(),
                         ),
 
-                        // ── Forgot Password ──
                         Align(
                           alignment: Alignment.centerRight,
                           child: Padding(
@@ -223,7 +213,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           ),
                         ),
 
-                        // ── Error Message ──
                         if (authState.error != null)
                           Container(
                             margin: const EdgeInsets.only(top: 16),
@@ -257,7 +246,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
                         const SizedBox(height: 28),
 
-                        // ── Sign In Button ──
                         SizedBox(
                           width: double.infinity,
                           height: 56,
@@ -298,7 +286,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
                         const SizedBox(height: 28),
 
-                        // ── Sign Up Link ──
                         Center(
                           child: GestureDetector(
                             onTap: () => context.push('/auth/register'),
@@ -327,7 +314,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
                         const SizedBox(height: 36),
 
-                        // ── Footer Text ──
                         Center(
                           child: Column(
                             children: [
@@ -363,8 +349,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       ),
     );
   }
-
-  // ── Glassmorphism Input Field ──────────────────────────────
 
   Widget _buildGlassInput({
     required TextEditingController controller,

@@ -79,7 +79,6 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
       final count = response.data['data']['count'] as int;
       state = state.copyWith(unreadCount: count);
     } catch (_) {
-      // Silent fail
     }
   }
 
@@ -103,7 +102,6 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
             : state.unreadCount,
       );
     } catch (_) {
-      // Silent fail
     }
   }
 

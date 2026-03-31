@@ -1,7 +1,3 @@
-// ══════════════════════════════════════════════════════════════
-// Dressly — GoRouter Configuration (Flutter)
-// ══════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,27 +17,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (BuildContext context, GoRouterState state) {
       final isLoggedIn = authState.isAuthenticated;
       final isAuthRoute = state.matchedLocation.startsWith('/auth');
-
-      // Still initializing – show nothing yet (handled by splash)
       if (!authState.isInitialized) return null;
-
-      // Not logged in and not on an auth route → go to login
       if (!isLoggedIn && !isAuthRoute) return '/auth/login';
-
-      // Logged in but on an auth route → go to home
       if (isLoggedIn && isAuthRoute) return '/';
 
-      return null; // no redirect
+      return null;
     },
     routes: [
-      // ── Main tab shell ─────────────────────────────────
       GoRoute(
         path: '/',
         name: 'home',
         builder: (context, state) => const TabShell(),
       ),
-
-      // ── Auth ───────────────────────────────────────────
       GoRoute(
         path: '/auth/login',
         name: 'login',
@@ -57,8 +44,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'forgotPassword',
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
-
-      // ── Admin ──────────────────────────────────────────
       GoRoute(
         path: '/admin',
         name: 'admin',
@@ -66,7 +51,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
 
-    // 404
     errorBuilder: (context, state) => Scaffold(
       body: Center(
         child: Text('Page not found: ${state.uri}'),

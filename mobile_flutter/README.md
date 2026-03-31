@@ -13,25 +13,18 @@ AI-powered fashion styling app built with Flutter + Dart for iOS and Android.
 ### Setup
 
 ```bash
-# Navigate to the Flutter project
 cd mobile_flutter
 
-# Get dependencies
 flutter pub get
 
-# Run on a connected device or emulator
 flutter run
 
-# Run on iOS simulator
 flutter run -d ios
 
-# Run on Android emulator
 flutter run -d android
 
-# Build release APK
 flutter build apk --release
 
-# Build iOS release
 flutter build ios --release
 ```
 
